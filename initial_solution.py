@@ -2,6 +2,7 @@ import logging
 import math
 from typing import List
 
+import numpy
 import numpy as np
 from numpy import ndarray
 
@@ -24,6 +25,7 @@ def generate_initial_solution(number_of_teams: int):
     fixture_table = get_balanced_berger_table(number_of_teams, fixture_table)
 
     assign_last_team_matches(fixture_table, 2)
+    return fixture_table
 
 
 def get_balanced_berger_table(n: int, matrix: ndarray) -> ndarray:
@@ -136,6 +138,23 @@ def assign_last_team_matches(fixture_table: ndarray, number_of_shared_venue_pair
             fixture_table[team_pair[1], n] = valid_game_week
             fixture_table[n, team_pair[1]] = valid_game_week - n
 
+    # Fill out remaining matches
+    for i in range(no_of_teams):
+        if i == n:
+            # If last row and last column is reached (should be zero) the fixture is complete
+            break
+        if fixture_table[i][n] != 0:
+            # Skip already assigned matchweeks
+            continue
+
+        valid_game_week = check_hard_constraints([diagonal_values[i], diagonal_values[i] + n], i, n, fixture_table)
+        if valid_game_week <= n:
+            fixture_table[i, n] = valid_game_week
+            fixture_table[n, i] = valid_game_week + n
+        else:
+            fixture_table[i, n] = valid_game_week
+            fixture_table[n, i] = valid_game_week - n
+
     print(fixture_table)
     # for i in range(n):
     #     fixture_table[i, n] = fixture_table[i, i]
@@ -161,6 +180,7 @@ def check_hard_constraints(tentative_values: List[int], row: int, col: int, fixt
         if check_three_consecutive_values(tentative_value, fixture_table[row]):
             continue
 
+        # TODO check that schedule of shared venue teams is different
         return tentative_value
 
     logger.warning(f'could not add any of the tentative value {tentative_values} in {fixture_table}')
@@ -180,4 +200,19 @@ def check_three_consecutive_values(value, list):
     return False
 
 
-generate_initial_solution(6)
+def show_fixture_list(fixture_table: ndarray):
+    no_of_games_per_round = len(fixture_table) // 2
+    for round in range((len(fixture_table) - 1) * 2):
+        item_index = numpy.where(fixture_table == round + 1)
+        round_matches = f"""
+            MATCHWEEK {round + 1}:
+        """
+
+        for game in range(no_of_games_per_round):
+            round_matches = f"{round_matches}\n\t\t\t\t{item_index[0][game] + 1} - {item_index[1][game] + 1}"
+
+        print(round_matches)
+
+
+sol = generate_initial_solution(6)
+show_fixture_list(sol)
