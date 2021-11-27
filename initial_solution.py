@@ -9,7 +9,7 @@ from numpy import ndarray
 from logger_formatter import LoggingFormatter
 
 logger = logging.getLogger("sports-time-scheduling")
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 # create console handler with a higher log level
 ch = logging.StreamHandler()
@@ -24,7 +24,7 @@ def generate_initial_solution(number_of_teams: int):
     fixture_table = np.zeros((number_of_teams, number_of_teams), dtype='int')
     fixture_table = get_balanced_berger_table(number_of_teams, fixture_table)
 
-    assign_last_team_matches(fixture_table, 2)
+    assign_last_team_matches(fixture_table, 3)
     return fixture_table
 
 
@@ -100,7 +100,8 @@ def assign_last_team_matches(fixture_table: ndarray, number_of_shared_venue_pair
     n = len(fixture_table) - 1
     # Get indexes of shared venue teams
     indexes_of_shared_venue_teams = [(i, math.ceil(no_of_teams / 2 + i - 1)) for i in range(number_of_shared_venue_pairs)]
-    logger.info(f'shared venue team indexes out of {no_of_teams} are {indexes_of_shared_venue_teams}')
+    logger.info(f'shared venue team indexes out of {no_of_teams} are {indexes_of_shared_venue_teams}\n'
+                f'human readable: {[(x + 1, y + 1) for x, y in indexes_of_shared_venue_teams]}')
 
     # Avoid modifying the object
     diagonal_values = fixture_table.diagonal().copy()
@@ -113,8 +114,13 @@ def assign_last_team_matches(fixture_table: ndarray, number_of_shared_venue_pair
     for team_pair in indexes_of_shared_venue_teams:
         # Get match week which we can set in the n-th col
 
-        valid_game_week = check_hard_constraints([diagonal_values[team_pair[0]], diagonal_values[team_pair[0]] + n], team_pair[0], n,
-                                                 fixture_table)
+        valid_game_week = check_hard_constraints(
+            tentative_values=[diagonal_values[team_pair[0]], diagonal_values[team_pair[0]] + n],
+            row=team_pair[0],
+            col=n,
+            fixture_table=fixture_table,
+            complementary_team=team_pair[1]
+        )
 
         logger.debug(f'setting {team_pair[0]} up against n-th team at Home in match week {valid_game_week}')
         if valid_game_week <= n:
@@ -128,7 +134,12 @@ def assign_last_team_matches(fixture_table: ndarray, number_of_shared_venue_pair
             fixture_table[n, team_pair[0]] = valid_game_week - n
 
         valid_game_week = check_hard_constraints(
-            [diagonal_values[team_pair[1]], diagonal_values[team_pair[1]] + n], team_pair[1], n, fixture_table)
+            tentative_values=[diagonal_values[team_pair[1]], diagonal_values[team_pair[1]] + n],
+            row=team_pair[1],
+            col=n,
+            fixture_table=fixture_table,
+            complementary_team=team_pair[0],
+        )
 
         logger.debug(f'setting {team_pair[1]} up against n-th team at Home in match week {valid_game_week}')
         if valid_game_week <= n:
@@ -156,12 +167,9 @@ def assign_last_team_matches(fixture_table: ndarray, number_of_shared_venue_pair
             fixture_table[n, i] = valid_game_week - n
 
     print(fixture_table)
-    # for i in range(n):
-    #     fixture_table[i, n] = fixture_table[i, i]
-    #     fixture_table[i, i] = 0
 
 
-def check_hard_constraints(tentative_values: List[int], row: int, col: int, fixture_table: ndarray):
+def check_hard_constraints(tentative_values: List[int], row: int, col: int, fixture_table: ndarray, complementary_team: int = None):
     logger.debug(f'attempting to place match week(s) {tentative_values} in position ({row}, {col}) in fixture table\n{fixture_table}')
     for tentative_value in tentative_values:
         # Check that the home team (row) does not already play at Home in the game week tentative_val
@@ -172,15 +180,18 @@ def check_hard_constraints(tentative_values: List[int], row: int, col: int, fixt
         if tentative_value in fixture_table[:, col]:
             continue
 
+        # Check that the complementary_team does not play in the same venue at Home in the match week (which means it plays away)
+        if complementary_team is not None and tentative_value in fixture_table[complementary_team]:
+            continue
+
         # Check that no 3 consecutive values are in home games (row)
         if check_three_consecutive_values(tentative_value, fixture_table[row]):
             continue
 
         # Check that not 3 consecutive values are in away games (col)
-        if check_three_consecutive_values(tentative_value, fixture_table[row]):
+        if check_three_consecutive_values(tentative_value, fixture_table[:, col]):
             continue
 
-        # TODO check that schedule of shared venue teams is different
         return tentative_value
 
     logger.warning(f'could not add any of the tentative value {tentative_values} in {fixture_table}')
@@ -214,5 +225,5 @@ def show_fixture_list(fixture_table: ndarray):
         print(round_matches)
 
 
-sol = generate_initial_solution(6)
+sol = generate_initial_solution(20)
 show_fixture_list(sol)
