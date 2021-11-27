@@ -1,6 +1,6 @@
 import logging.config
 
-from log.application_logging import LOGGING_CONF
+from sports_scheduling.log.application_logging import LOGGING_CONF
 
 logger = logging.getLogger('sports-time-scheduling')
 

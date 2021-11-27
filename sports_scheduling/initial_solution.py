@@ -6,9 +6,9 @@ import numpy
 import numpy as np
 from numpy import ndarray
 
-from logger_formatter import LoggingFormatter
+from log.logger_formatter import LoggingFormatter
 
-logger = logging.getLogger("sports-time-scheduling")
+logger = logging.getLogger("sports-times-scheduling")
 logger.setLevel(logging.INFO)
 
 # create console handler with a higher log level
