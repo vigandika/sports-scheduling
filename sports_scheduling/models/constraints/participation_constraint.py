@@ -16,7 +16,7 @@ class ParticipationConstraint(BaseConstraint):
         no_of_matchweeks = (len(teams) - 1) * 2
         for team in teams:
             assert getattr(team, 'assigned_index') is not None, f"team {team.name} needs to have an 'assigned_index'"
-            for matchweek in range(1, no_of_matchweeks):
+            for matchweek in range(1, no_of_matchweeks + 1):
                 if matchweek not in fixture_table[team.assigned_index] and matchweek not in fixture_table[:, team.assigned_index]:
                     # If the matchweek is not found in home fixtures (row) or in away fixtures (column)
                     return True
