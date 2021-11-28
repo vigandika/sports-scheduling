@@ -20,7 +20,7 @@ with open('models/test_json_outlook.json') as f:
     data = json.load(f)
     try:
         for team in data["teams"]:
-            teams.append(Team(name=team['name'], category=team['category']))
+            teams.append(Team(id=team['id'], name=team['name'], category=team['category']))
     except Exception:
         raise RuntimeError(f"an expected error occurred when processing team {team} in data {data}")
 

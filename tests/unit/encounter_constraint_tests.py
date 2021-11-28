@@ -14,12 +14,12 @@ class EncounterConstraintTests(TestCase):
 
     def test_is_violated(self):
         teams = [
-            Team('xyz', 'A'),
-            Team('xyz', 'A'),
-            Team('xyz', 'A'),
-            Team('xyz', 'A'),
-            Team('xyz', 'A'),
-            Team('xyz', 'A'),
+            Team(1, 'xyz', 'A'),
+            Team(2, 'xyz', 'A'),
+            Team(3, 'xyz', 'A'),
+            Team(4, 'xyz', 'A'),
+            Team(5, 'xyz', 'A'),
+            Team(6, 'xyz', 'A'),
         ]
 
         for index in range(len(teams)):
