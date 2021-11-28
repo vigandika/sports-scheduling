@@ -58,15 +58,15 @@
       "type": "opponentConstraint",
       "level": "SOFT",
       "penalty": 5,
-      "team": "4",
-      "opponent": "5",
+      "teamId": 4,
+      "opponentId": 5,
       "matchweek": 3
     },
     {
       "type": "venueConstraint",
       "level": "SOFT",
       "penalty": 2,
-      "team": "1",
+      "teamId": 1,
       "venue": "H",
       "matchweek": 3
     },
@@ -74,8 +74,8 @@
       "type": "repeaterGapConstraint",
       "level": "SOFT",
       "penalty": 1,
-      "team1": "1",
-      "team2": "2",
+      "team1Id": 1,
+      "team2Id": 2,
       "minimumGap": 18
     },
     {
