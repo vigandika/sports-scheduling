@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Ignore initial_solution file used for internal testing
+initial_solution.py
+
 # Distribution / packaging
 .Python
 build/

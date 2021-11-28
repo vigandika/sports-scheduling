@@ -1,0 +1,48 @@
+{
+  "teams": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+  ],
+  "constraints": [
+    {
+      "type": "breaksConstraint",
+      "level": "HARD",
+      "maxBreaks": 2
+    },
+    {
+      "type": "noRepeaterConstraint",
+      "level": "HARD",
+      "penalty": 3,
+      "minRounds": 3
+    },
+    {
+      "type": "venueConstraint",
+      "level": "HARD",
+      "team": "2",
+      "venue": "A",
+      "matchweek": 1
+    },
+    {
+      "type": "opponentConstraint",
+      "level": "SOFT",
+      "team": "4",
+      "venue": "H",
+      "matchweek": 5
+    },
+    {
+      "type": "sharedVenueConstraint",
+      "level": "HARD",
+      "teams": [
+        "3",
+        "4"
+      ]
+    }
+  ]
+}
+
+
+
