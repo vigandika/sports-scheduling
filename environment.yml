@@ -1,4 +1,4 @@
-name: sports-timetable-scheduling
+name: sports-scheduling
 dependencies:
   - pip:
     - numpy==1.21.4

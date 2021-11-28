@@ -18,7 +18,7 @@ class Scheduler:
         self.number_of_shared_venue_pairs = number_of_shared_venue_pairs
         self.fixture_table = np.zeros((number_of_teams, number_of_teams), dtype='int')
 
-    def solve(self):
+    def generate(self):
         self.fill_balanced_bergers_table()
         self.assign_last_team_matches()
 
@@ -108,7 +108,7 @@ class Scheduler:
         for team_pair in indexes_of_shared_venue_teams:
             # Get match week which we can set in the n-th col
 
-            valid_game_week = self.check_hard_constraints(
+            valid_game_week = self.get_legal_value(
                 tentative_values=[diagonal_values[team_pair[0]], diagonal_values[team_pair[0]] + n],
                 row=team_pair[0],
                 col=n,
@@ -127,7 +127,7 @@ class Scheduler:
                 self.fixture_table[team_pair[0], n] = valid_game_week
                 self.fixture_table[n, team_pair[0]] = valid_game_week - n
 
-            valid_game_week = self.check_hard_constraints(
+            valid_game_week = self.get_legal_value(
                 tentative_values=[diagonal_values[team_pair[1]], diagonal_values[team_pair[1]] + n],
                 row=team_pair[1],
                 col=n,
@@ -152,7 +152,7 @@ class Scheduler:
                 # Skip already assigned matchweeks
                 continue
 
-            valid_game_week = self.check_hard_constraints([diagonal_values[i], diagonal_values[i] + n], i, n, self.fixture_table)
+            valid_game_week = self.get_legal_value([diagonal_values[i], diagonal_values[i] + n], i, n, self.fixture_table)
             if valid_game_week <= n:
                 self.fixture_table[i, n] = valid_game_week
                 self.fixture_table[n, i] = valid_game_week + n
@@ -160,8 +160,8 @@ class Scheduler:
                 self.fixture_table[i, n] = valid_game_week
                 self.fixture_table[n, i] = valid_game_week - n
 
-    def check_hard_constraints(self, tentative_values: List[int], row: int, col: int, fixture_table: ndarray,
-                               complementary_team: int = None):
+    def get_legal_value(self, tentative_values: List[int], row: int, col: int, fixture_table: ndarray,
+                        complementary_team: int = None):
 
         self.logger.debug(f'attempting to place match week(s) {tentative_values} in position ({row}, {col})'
                           f' in fixture table\n{fixture_table}')
