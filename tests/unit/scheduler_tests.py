@@ -173,6 +173,14 @@ class SchedulerTests(TestCase):
         self.assertFalse(scheduler.find_n_consecutive_values(3, np.array([1, 3, 4, 8, 9, 12, 15]), 8))
         self.assertFalse(scheduler.find_n_consecutive_values(3, np.array([1, 3, 4, 8, 9, 12, 15]), 11))
 
+        self.assertTrue(scheduler.find_n_consecutive_values(3, np.array([1, 3, 5, 7, 9, 12]), 2))
+        self.assertTrue(scheduler.find_n_consecutive_values(3, np.array([1, 3, 5, 7, 9, 12]), 4))
+        self.assertTrue(scheduler.find_n_consecutive_values(3, np.array([1, 3, 5, 7, 9, 12]), 6))
+        self.assertTrue(scheduler.find_n_consecutive_values(3, np.array([1, 3, 5, 7, 9, 12]), 8))
+
+        self.assertFalse(scheduler.find_n_consecutive_values(3, np.array([1, 3, 5, 7, 9, 12]), 10))
+        self.assertFalse(scheduler.find_n_consecutive_values(3, np.array([1, 3, 5, 7, 9, 12]), 1))
+
         self.assertTrue(scheduler.find_n_consecutive_values(4, np.array([1, 2, 4, 8, 9, 12, 15]), 3))
         self.assertFalse(scheduler.find_n_consecutive_values(4, np.array([1, 2, 4, 8, 9, 12, 15]), 10))
 
