@@ -80,6 +80,6 @@ class ParticipationConstraintTests(TestCase):
             [5, 6, 2, 8, 0, 9],
             [1, 3, 10, 7, 4, 0],
         ])
-        # them
+        # then
         participation_constraint = ParticipationConstraint()
         self.assertTrue(participation_constraint.is_violated(teams, fixture_table))

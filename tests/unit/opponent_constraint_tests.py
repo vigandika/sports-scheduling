@@ -30,7 +30,7 @@ class OpponentConstraintTests(TestCase):
             [5, 6, 2, 8, 0, 9],
             [1, 3, 10, 7, 4, 0],
         ])
-        # them
+        # then
         opponent = OpponentConstraint(team_id=1, opponent_id=3, matchweek=8, penalty=1)
         self.assertTrue(opponent.is_violated(teams, fixture_table))
 
