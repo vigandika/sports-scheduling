@@ -18,7 +18,7 @@ class Scheduler:
         self.number_of_shared_venue_pairs = number_of_shared_venue_pairs
         self.fixture_table = np.zeros((number_of_teams, number_of_teams), dtype='int')
 
-    def solve(self):
+    def generate(self):
         self.fill_balanced_bergers_table()
         self.assign_last_team_matches()
 
