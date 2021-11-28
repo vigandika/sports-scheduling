@@ -13,7 +13,7 @@ class Scheduler:
 
     def __init__(self, number_of_teams: int, number_of_shared_venue_pairs: int):
         # init logging
-        self.logger = init_logging()
+        self.logger = init_logging().getLogger(__name__)
         self.number_of_teams = number_of_teams
         self.number_of_shared_venue_pairs = number_of_shared_venue_pairs
         self.fixture_table = np.zeros((number_of_teams, number_of_teams), dtype='int')
@@ -94,8 +94,8 @@ class Scheduler:
 
         # Get indexes of shared venue teams
         indexes_of_shared_venue_teams = [(i, math.ceil(no_of_teams / 2 + i - 1)) for i in range(self.number_of_shared_venue_pairs)]
-        self.logger.info(f'shared venue team indexes out of {no_of_teams} are {indexes_of_shared_venue_teams}\n'
-                         f'human readable: {[(x + 1, y + 1) for x, y in indexes_of_shared_venue_teams]}')
+        self.logger.info(f'shared venue team indexes out of {no_of_teams} are {indexes_of_shared_venue_teams}'
+                         f'(human readable: {[(x + 1, y + 1) for x, y in indexes_of_shared_venue_teams]})')
 
         # Avoid modifying the object
         diagonal_values = self.fixture_table.diagonal().copy()
