@@ -1,5 +1,9 @@
+from typing import List
+
 import numpy as np
 from numpy import ndarray
+
+from sports_scheduling.models.teams.teams import Team
 
 
 def show_fixture_list(fixture_table: ndarray):
@@ -14,3 +18,10 @@ def show_fixture_list(fixture_table: ndarray):
             match_week_fixtures = f"{match_week_fixtures}\n\t\t\t\t{item_index[0][game] + 1} - {item_index[1][game] + 1}"
 
         print(match_week_fixtures)
+
+
+def get_team_by_id(teams: List[Team], id: int) -> Team:
+    for team in teams:
+        if team.id == id:
+            return team
+    raise LookupError(f'could not find team with id {id} in teams {teams}')
