@@ -160,3 +160,20 @@ class SchedulerTests(TestCase):
         value = scheduler.check_hard_constraints([*complementary_team_violations], target_row, target_col, fixture_table,
                                                  complementary_team_index)
         self.assertIsNone(value)
+
+    def test_check_n_consecutive_values(self, _):
+        scheduler = Scheduler(6, 2)
+
+        self.assertTrue(scheduler.find_n_consecutive_values(3, np.array([1, 3, 4, 8, 9, 12, 15]), 2))
+        self.assertTrue(scheduler.find_n_consecutive_values(3, np.array([1, 3, 4, 8, 9, 12, 15]), 5))
+        self.assertTrue(scheduler.find_n_consecutive_values(3, np.array([1, 3, 4, 8, 9, 12, 15]), 7))
+        self.assertTrue(scheduler.find_n_consecutive_values(3, np.array([1, 2, 3, 5, 9, 12, 15]), 10))
+
+        self.assertFalse(scheduler.find_n_consecutive_values(3, np.array([0, 1, 4, 8, 9, 12, 15]), 2))
+        self.assertFalse(scheduler.find_n_consecutive_values(3, np.array([1, 3, 4, 8, 9, 12, 15]), 8))
+        self.assertFalse(scheduler.find_n_consecutive_values(3, np.array([1, 3, 4, 8, 9, 12, 15]), 11))
+
+        self.assertTrue(scheduler.find_n_consecutive_values(4, np.array([1, 2, 4, 8, 9, 12, 15]), 3))
+        self.assertFalse(scheduler.find_n_consecutive_values(4, np.array([1, 2, 4, 8, 9, 12, 15]), 10))
+
+        self.assertTrue(scheduler.find_n_consecutive_values(5, np.array([1, 2, 4, 5, 9, 12, 15]), 3))

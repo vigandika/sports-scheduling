@@ -1,5 +1,7 @@
 import math
-from typing import List
+from itertools import groupby
+from operator import itemgetter
+from typing import List, Optional
 
 import numpy as np
 from numpy import ndarray
@@ -178,11 +180,11 @@ class Scheduler:
                 continue
 
             # Check that no 3 consecutive values are in home games (row)
-            if self.check_three_consecutive_values(tentative_value, fixture_table[row]):
+            if self.find_n_consecutive_values(3, fixture_table[row], tentative_value) is True:
                 continue
 
             # Check that not 3 consecutive values are in away games (col)
-            if self.check_three_consecutive_values(tentative_value, fixture_table[:, col]):
+            if self.find_n_consecutive_values(3, fixture_table[:, col], tentative_value) is True:
                 continue
 
             return tentative_value
@@ -190,14 +192,24 @@ class Scheduler:
         self.logger.warning(f'could not add any of the tentative value {tentative_values} in {fixture_table}')
         return None
 
-    def check_three_consecutive_values(self, value, list):
-        if all(x in list for x in [value + 1, value + 2]):
-            return True
+    @staticmethod
+    def find_n_consecutive_values(n: int, team_fixture_list: ndarray, tentative_value: Optional[int] = None):
+        """
+        https://stackoverflow.com/a/2154437
+        """
+        fixture_list = team_fixture_list.copy()
+        fixture_list = fixture_list.tolist()
+        if tentative_value:
+            fixture_list.append(tentative_value)
 
-        if all(x in list for x in [value - 1, value - 2]):
-            return True
+        # Remove zeros
+        fixture_list = [match_week for match_week in fixture_list if match_week != 0]
+        fixture_list.sort()
+        for k, g in groupby(enumerate(fixture_list), lambda x: x[0] - x[1]):
+            group = (map(itemgetter(1), g))
+            group = list(map(int, group))
 
-        if all(x in list for x in [value - 1, value + 1]):
-            return True
+            if len(group) >= n:
+                return True
 
         return False
