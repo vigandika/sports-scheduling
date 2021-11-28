@@ -1,10 +1,8 @@
-
-
 class BaseConstraint:
 
-    def __init__(self, type, level):
-        self.type = type
+    def __init__(self, bracket, level):
+        self.bracket = bracket
         self.level = level
 
-    def violated(self):
+    def is_violated(self):
         raise NotImplementedError()
