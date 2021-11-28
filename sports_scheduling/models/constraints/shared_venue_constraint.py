@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from sports_scheduling.constraints.base_constraint import BaseConstraint
+from sports_scheduling.models.constraints.base_constraint import BaseConstraint
 
 
 class SharedVenueConstraint(BaseConstraint):
