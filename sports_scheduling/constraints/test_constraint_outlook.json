@@ -1,0 +1,65 @@
+{
+  "constraints": [
+    {
+      "type": "completeCycleConstraint",
+      "level": "HARD"
+    },
+    {
+      "type": "encounterConstraint",
+      "level": "HARD"
+    },
+    {
+      "type": "participationConstraint",
+      "level": "HARD"
+    },
+    {
+      "type": "staticVenueConstraint",
+      "level": "HARD",
+      "maximum": 3
+    },
+    {
+      "type": "sharedVenueConstraint",
+      "level": "HARD",
+      "teams": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ]
+      ]
+    },
+    {
+      "type": "opponentConstraint",
+      "level": "SOFT",
+      "penalty": 5,
+      "team": "4",
+      "opponent": "5",
+      "matchweek": 3
+    },
+    {
+      "type": "venueConstraint",
+      "level": "SOFT",
+      "penalty": 2,
+      "team": "1",
+      "venue": "H",
+      "matchweek": 3
+    },
+    {
+      "type": "repeaterGapConstraint",
+      "level": "SOFT",
+      "penalty": 1,
+      "team1": "1",
+      "team2": "2",
+      "minimumGap": 18
+    },
+    {
+      "type": "fairnessConstraint",
+      "level": "SOFT",
+      "penalty": 2,
+      "consecutiveHardMatches": 3
+    }
+  ]
+}

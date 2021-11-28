@@ -7,4 +7,5 @@ class EncounterConstraint(BaseConstraint):
         """Every team should play against every other team, once H and once A"""
         super().__init__(bracket='encounterConstraint', level='HARD')
 
-
+    def is_violated(self):
+        pass
