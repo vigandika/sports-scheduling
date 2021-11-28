@@ -4,3 +4,4 @@ class Team:
         self.id = index
         self.name = name
         self.category = category
+        self.assigned_index = None
