@@ -20,7 +20,7 @@ with open('models/test_json_outlook.json') as f:
     data = json.load(f)
     try:
         for team in data["teams"]:
-            teams.append(Team(index=team['id'], name=team['name'], category=team['category']))
+            teams.append(Team(id=team['id'], name=team['name'], category=team['category']))
     except Exception:
         raise RuntimeError(f"an expected error occurred when processing team {team} in data {data}")
 
@@ -42,14 +42,13 @@ with open('models/test_json_outlook.json') as f:
 
             elif constraint['level'] == 'SOFT':
                 if constraint['type'] == 'opponentConstraint':
-                    soft_constraints.append(OpponentConstraint(team=constraint['team'], opponent=constraint['opponent'],
+                    soft_constraints.append(OpponentConstraint(team_id=constraint['teamId'], opponent_id=constraint['opponentId'],
                                                                matchweek=constraint['matchweek'], penalty=constraint['penalty']))
                 elif constraint['type'] == 'venueConstraint':
-                    soft_constraints.append(
-                        VenueConstraint(team=constraint['team'], venue=constraint['venue'], matchweek=constraint['venue'],
-                                        penalty=constraint['penalty']))
+                    soft_constraints.append(VenueConstraint(team_id=constraint['teamId'], venue=constraint['venue'],
+                                                            matchweek=constraint['venue'], penalty=constraint['penalty']))
                 elif constraint['type'] == 'repeaterGapConstraint':
-                    soft_constraints.append(RepeaterGapConstraint(team1=constraint['team1'], team2=constraint['team2'],
+                    soft_constraints.append(RepeaterGapConstraint(team1_id=constraint['team1Id'], team2_id=constraint['team2Id'],
                                                                   minimum_gap=constraint['minimumGap'], penalty=constraint['penalty']))
                 elif constraint['type'] == 'fairnessConstraint':
                     soft_constraints.append(FairnessConstraint(consecutive_hard_matches=constraint['consecutiveHardMatches']))
