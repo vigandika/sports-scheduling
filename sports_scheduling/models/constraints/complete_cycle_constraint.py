@@ -1,6 +1,6 @@
 from typing import List
 
-from numpy.core.records import ndarray
+from numpy import ndarray
 
 from sports_scheduling.models.constraints.base_constraint import BaseConstraint
 from sports_scheduling.models.teams.teams import Team
