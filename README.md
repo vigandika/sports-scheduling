@@ -40,3 +40,10 @@ environment path you just created.
 After adjusting the environment, you can run a demo problem for different test cases in the integration tests file located in 
 `tests/integration/sports_scheduling_integration_tests.py`, giving the two parameters as you please: `number_of_teams` and 
 `number_of_shared_venue_pairs`.
+
+## Trivia
+
+The word 'matchweek' will probably appear as a typo in your IDE because it's not an official word in the English Language. However, because
+this terminology is heavily used in football competitions, I decided to use it in the project as well. If the underline annoys you
+(like it did to me), you can add it in the dictionary of your IDE, so it doesn't show it as a typo anymore. 
+The way to do this in PyCharm (v2021.2.3) is by hovering over the green underlined word, clicking "More Actions" >  "Save to dictionary".
