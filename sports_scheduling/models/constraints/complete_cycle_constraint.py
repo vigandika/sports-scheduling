@@ -15,6 +15,7 @@ class CompleteCycleConstraint(BaseConstraint):
     def is_violated(self, teams: List[Team], fixture_table: ndarray) -> bool:
         first_half_season_matchweeks = [i for i in range(len(teams))]
         for team in teams:
+            assert getattr(team, 'assigned_index') is not None, f"team {team.name} needs to have an 'assigned_index'"
             for i in range(len(teams)):
                 if fixture_table[team.assigned_index, i] == 0:
                     continue
