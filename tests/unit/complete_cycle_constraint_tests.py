@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.mock import patch
 
 import numpy as np
 
@@ -6,13 +7,15 @@ from sports_scheduling.models.constraints.complete_cycle_constraint import Compl
 from sports_scheduling.models.teams.teams import Team
 
 
+@patch('sports_scheduling.models.constraints.base_constraint.init_logging')
 class CompleteCycleConstraintTests(TestCase):
 
     @classmethod
-    def setUpClass(cls):
+    @patch('sports_scheduling.models.constraints.base_constraint.init_logging')
+    def setUpClass(cls, _):
         cls.complete_cycle_constraint = CompleteCycleConstraint()
 
-    def test_is_violated(self):
+    def test_is_violated(self, _):
         teams = [
             Team(1, 'xyz', 'A'),
             Team(2, 'xyz', 'A'),

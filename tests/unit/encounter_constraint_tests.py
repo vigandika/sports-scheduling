@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.mock import patch
 
 import numpy as np
 
@@ -6,13 +7,15 @@ from sports_scheduling.models.constraints.encounter_constraint import EncounterC
 from sports_scheduling.models.teams.teams import Team
 
 
+@patch('sports_scheduling.models.constraints.base_constraint.init_logging')
 class EncounterConstraintTests(TestCase):
 
     @classmethod
-    def setUpClass(cls):
+    @patch('sports_scheduling.models.constraints.base_constraint.init_logging')
+    def setUpClass(cls, _):
         cls.encounter_constraint = EncounterConstraint()
 
-    def test_is_violated(self):
+    def test_is_violated(self, _):
         teams = [
             Team(1, 'xyz', 'A'),
             Team(2, 'xyz', 'A'),

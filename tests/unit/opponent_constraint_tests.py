@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.mock import patch
 
 import numpy as np
 
@@ -6,9 +7,10 @@ from sports_scheduling.models.constraints.opponent_constraint import OpponentCon
 from sports_scheduling.models.teams.teams import Team
 
 
+@patch('sports_scheduling.models.constraints.base_constraint.init_logging')
 class OpponentConstraintTests(TestCase):
 
-    def test_is_violated(self):
+    def test_is_violated(self, _):
         teams = [
             Team(1, 'xyz', 'A'),
             Team(2, 'xyz', 'A'),
