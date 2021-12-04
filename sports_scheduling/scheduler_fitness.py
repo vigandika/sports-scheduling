@@ -20,9 +20,7 @@ class SchedulerFitness:
         """Check if any of the hard constraints is violated."""
         for constraint in self.hard_constraints:
             if constraint.is_violated(self.teams, fixture_table):
-                self.logger.error(f'hard constraint not satisfied {constraint.bracket}\n')
-                pprint(vars(constraint))
-                pprint([vars(team) for team in self.teams])
+                self.logger.error(f'hard constraint not satisfied {vars(constraint)}\n')
                 return False
 
         return True
