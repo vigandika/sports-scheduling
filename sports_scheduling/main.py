@@ -29,7 +29,7 @@ elif len(shared_venue_constraints) == 1:
 else:
     shared_venue_constraint = 0
 
-initial_solution = Scheduler(number_of_teams=len(teams), number_of_shared_venue_pairs=shared_venue_constraint.no_of_shared_venue_team_pairs)
+initial_solution = Scheduler(number_of_teams=len(teams), shared_venue_team_pairs=shared_venue_constraint.shared_venue_team_pairs)
 
 # assign indexes
 

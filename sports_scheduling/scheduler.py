@@ -1,7 +1,7 @@
 import math
 from itertools import groupby
 from operator import itemgetter
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import numpy as np
 from numpy import ndarray
@@ -11,11 +11,12 @@ from sports_scheduling.log import init_logging
 
 class Scheduler:
 
-    def __init__(self, number_of_teams: int, number_of_shared_venue_pairs: int):
+    def __init__(self, number_of_teams: int, shared_venue_team_pairs: List[Tuple[int, int]]):
         # init logging
         self.logger = init_logging().getLogger(__name__)
         self.number_of_teams = number_of_teams
-        self.number_of_shared_venue_pairs = number_of_shared_venue_pairs
+        self.shared_venue_team_pairs = shared_venue_team_pairs
+        self.number_of_shared_venue_pairs = len(shared_venue_team_pairs)
         self.fixture_table = np.zeros((number_of_teams, number_of_teams), dtype='int')
 
     def generate(self):
