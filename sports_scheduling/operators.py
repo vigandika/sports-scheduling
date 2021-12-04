@@ -7,6 +7,9 @@ from sports_scheduling.models.teams.teams import Team
 
 def swap_homes(fixture_table: ndarray, team_1: Team, team_2: Team) -> ndarray:
     """Return the mutated fixture table by switching the venues in matches between two teams"""
+    if team_1.id == team_2.id:
+        # If the input teams are the same teams, return the fixture_table untouched
+        return fixture_table
     # avoid modifying the object to avoid unexpected behavior
     schedule_table = copy.deepcopy(fixture_table)
     assert getattr(team_1, 'assigned_index') is not None and getattr(team_2, 'assigned_index') is not None, \
@@ -23,6 +26,9 @@ def swap_schedules(team_1: Team, team_2: Team):
     Change whole schedules of two teams. After the operator is applied they both will play the matches meant for the other team in the same
     order
     """
+    if team_1.id == team_2.id:
+        # If the input teams are the same teams, stop applying the operator
+        return
     team_1.assigned_index, team_2.assigned_index = team_2.assigned_index, team_1.assigned_index
 
 
@@ -30,6 +36,10 @@ def swap_matchweeks(fixture_table: ndarray, matchweek_1: int, matchweek_2: int) 
     """
     Change all fixtures of one matchweek to another matchweek and vice-versa.
     """
+    if matchweek_1 == matchweek_2:
+        # If the input matchweeks are the same teams, return the fixture_table untouched
+        return fixture_table
+
     assert {matchweek_1, matchweek_2} <= {i + 1 for i in range(len(fixture_table) * 2)}, \
         f"one of matchweeks ({matchweek_1}, {matchweek_2}) outside of legal bounds 1-{len(fixture_table)}"
 
