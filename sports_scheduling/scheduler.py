@@ -1,4 +1,3 @@
-import math
 from itertools import groupby
 from operator import itemgetter
 from typing import List, Optional, Tuple
@@ -7,6 +6,7 @@ import numpy as np
 from numpy import ndarray
 
 from sports_scheduling.log import init_logging
+from sports_scheduling.util import get_indexes_of_shared_venue_teams
 
 
 class Scheduler:
@@ -94,7 +94,7 @@ class Scheduler:
         n = no_of_teams - 1
 
         # Get indexes of shared venue teams
-        indexes_of_shared_venue_teams = [(i, math.ceil(no_of_teams / 2 + i - 1)) for i in range(self.number_of_shared_venue_pairs)]
+        indexes_of_shared_venue_teams = get_indexes_of_shared_venue_teams(no_of_teams, self.number_of_shared_venue_pairs)
         self.logger.info(f'shared venue team indexes out of {no_of_teams} are {indexes_of_shared_venue_teams}'
                          f'(human readable: {[(x + 1, y + 1) for x, y in indexes_of_shared_venue_teams]})')
 
