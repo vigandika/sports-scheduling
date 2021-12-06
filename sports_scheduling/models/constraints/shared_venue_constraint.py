@@ -17,7 +17,7 @@ class SharedVenueConstraint(BaseConstraint):
                                         teams with ids 1 and 3 and the pair of teams with ids 2 and 4 are shared venue teams.
         """
         super().__init__(bracket='sharedVenueConstraint', level='HARD')
-        self.no_of_shared_venue_teams = len(shared_venue_team_pairs)
+        self.no_of_shared_venue_team_pairs = len(shared_venue_team_pairs)
         self.shared_venue_team_pairs = shared_venue_team_pairs
 
     def is_violated(self, teams: List[Team], fixture_table: ndarray):

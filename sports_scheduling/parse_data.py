@@ -12,6 +12,8 @@ from sports_scheduling.models.constraints.shared_venue_constraint import SharedV
 from sports_scheduling.models.constraints.static_venue_constraint import StaticVenueConstraint
 from sports_scheduling.models.constraints.venue_constraint import VenueConstraint
 from sports_scheduling.models.teams.teams import Team
+from sports_scheduling.scheduler import Scheduler
+from sports_scheduling.util import assign_teams
 
 teams: List[Team] = []
 soft_constraints: List[BaseConstraint] = []
@@ -58,3 +60,12 @@ with open('models/test_json_outlook.json') as f:
                 raise TypeError(f"unrecognized level type '{constraint['type']}'")
     except Exception:
         raise RuntimeError(f"an expected error occurred when processing constraint {constraint} in data {data}")
+
+# Test
+sol = Scheduler(6, [(1, 3), (2, 5)])
+sol.generate()
+
+print(sol.fixture_table)
+shared_venue_constraints = [soft_constraint for soft_constraint in hard_constraints if isinstance(soft_constraint, SharedVenueConstraint)]
+
+assign_teams(teams, shared_venue_constraints[0].shared_venue_team_pairs)

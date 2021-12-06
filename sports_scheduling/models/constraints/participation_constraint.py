@@ -19,6 +19,8 @@ class ParticipationConstraint(BaseConstraint):
             for matchweek in range(1, no_of_matchweeks + 1):
                 if matchweek not in fixture_table[team.assigned_index] and matchweek not in fixture_table[:, team.assigned_index]:
                     # If the matchweek is not found in home fixtures (row) or in away fixtures (column)
+                    self.logger.debug(f'constraint violated from team with id {team.id} and assigned index {team.assigned_index} '
+                                      f'matchweek {matchweek}')
                     return True
 
         return False

@@ -29,6 +29,7 @@ class StaticVenueConstraint(BaseConstraint):
                 if len(group) > self.maximum:
                     return True
 
+        # Iterate away fixtures in the transposed matrix
         for away_fixture_list in schedule_table.T:
             # Remove zeros
             matchweeks = [matchweek for matchweek in away_fixture_list if matchweek != 0]
@@ -41,4 +42,3 @@ class StaticVenueConstraint(BaseConstraint):
                     return True
 
         return False
-
