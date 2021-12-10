@@ -2,7 +2,7 @@ from typing import List
 
 from numpy import ndarray
 
-from sports_scheduling.log import init_logging
+from sports_scheduling.log import get_logger
 from sports_scheduling.models.constraints.base_constraint import BaseConstraint
 from sports_scheduling.models.teams.teams import Team
 
@@ -10,7 +10,7 @@ from sports_scheduling.models.teams.teams import Team
 class SchedulerFitness:
 
     def __init__(self, hard_constraints: List[BaseConstraint], soft_constraints: List[BaseConstraint]):
-        self.logger = init_logging().getLogger(__name__)
+        self.logger = get_logger(__name__)
         self.hard_constraints = hard_constraints
         self.soft_constraints = soft_constraints
 
@@ -18,7 +18,7 @@ class SchedulerFitness:
         """Check if any of the hard constraints is violated."""
         for constraint in self.hard_constraints:
             if constraint.is_violated(teams, fixture_table):
-                self.logger.error(f'hard constraint not satisfied {vars(constraint)}\n')
+                self.logger.debug(f'hard constraint not satisfied {vars(constraint)}\n')
                 return False
 
         return True

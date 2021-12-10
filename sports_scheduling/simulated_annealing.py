@@ -5,6 +5,7 @@ from typing import List, Tuple
 
 from numpy import ndarray
 
+from sports_scheduling.log import get_logger
 from sports_scheduling.models.constraints.base_constraint import BaseConstraint
 from sports_scheduling.models.teams.teams import Team
 from sports_scheduling.operators import swap_homes, swap_schedules, swap_matchweeks
@@ -14,6 +15,7 @@ from sports_scheduling.scheduler_fitness import SchedulerFitness
 class SimulatedAnnealing:
 
     def __init__(self, hard_constraints: List[BaseConstraint], soft_constraints: List[BaseConstraint]):
+        self.logger = get_logger(__name__)
         self.fitness = SchedulerFitness(hard_constraints, soft_constraints)
 
     def run(self, initial_state: ndarray, teams: List[Team]):
@@ -25,11 +27,11 @@ class SimulatedAnnealing:
         alpha = 0.01
 
         current_temp = initial_temp
-
         # Start by initializing the current state with the initial state
         current_state = initial_state
         current_teams = teams
 
+        self.logger.info(f'current fitness: {self.fitness.get_fitness_value(current_state, current_teams)}')
         while current_temp > final_temp:
             neighbor_state, neighbor_teams = self.get_random_neighbor(current_state, current_teams)
             # Check if neighbor is a feasible solution
@@ -41,15 +43,18 @@ class SimulatedAnnealing:
 
                 # if the new solution is better, accept it
                 if fitness_diff > 0:
+                    self.logger.info(f'accepting state with fitness: {self.fitness.get_fitness_value(neighbor_state, neighbor_teams)}')
                     current_state, current_teams = neighbor_state, neighbor_teams
                 # if the new solution is not better, accept it with a probability of e^(-cost/temp)
                 else:
                     if random.uniform(0, 1) < math.exp(-fitness_diff / current_temp):
+                        self.logger.info(f'accepting state with fitness: {self.fitness.get_fitness_value(neighbor_state, neighbor_teams)}')
                         current_state, current_teams = neighbor_state, neighbor_teams
 
             # decrement the temperature
             current_temp -= alpha
 
+        self.logger.info(f'final fitness: {self.fitness.get_fitness_value(current_state, current_teams)}')
         return current_state, current_teams
 
     def get_random_neighbor(self, state: ndarray, teams: List[Team]) -> Tuple[ndarray, List[Team]]:

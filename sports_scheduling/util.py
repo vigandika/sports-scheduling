@@ -1,4 +1,3 @@
-import logging
 import math
 import random
 from typing import List, Tuple, Optional, Dict
@@ -6,9 +5,10 @@ from typing import List, Tuple, Optional, Dict
 import numpy as np
 from numpy import ndarray
 
+from sports_scheduling.log import get_logger
 from sports_scheduling.models.teams.teams import Team
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def get_team_by_id(teams: List[Team], id: int) -> Team:
