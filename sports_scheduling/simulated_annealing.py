@@ -47,12 +47,12 @@ class SimulatedAnnealing:
                     current_state, current_teams = neighbor_state, neighbor_teams
                 # if the new solution is not better, accept it with a probability of e^(-cost/temp)
                 else:
-                    if random.uniform(0, 1) < math.exp(-fitness_diff / current_temp):
+                    if random.uniform(0, 1) < math.exp(fitness_diff / current_temp):
                         self.logger.info(f'accepting state with fitness: {self.fitness.get_fitness_value(neighbor_state, neighbor_teams)}')
                         current_state, current_teams = neighbor_state, neighbor_teams
 
-            # decrement the temperature
-            current_temp -= alpha
+                # decrement the temperature
+                current_temp -= alpha
 
         self.logger.info(f'final fitness: {self.fitness.get_fitness_value(current_state, current_teams)}')
         return current_state, current_teams

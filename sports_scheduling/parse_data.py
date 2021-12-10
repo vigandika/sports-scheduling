@@ -18,7 +18,7 @@ from sports_scheduling.util import assign_teams
 teams: List[Team] = []
 soft_constraints: List[BaseConstraint] = []
 hard_constraints: List[BaseConstraint] = []
-with open('models/test_json_outlook.json') as f:
+with open('../problem_instances/problem_2_teams_6_instance.json') as f:
     data = json.load(f)
     try:
         for team in data["teams"]:
@@ -62,10 +62,10 @@ with open('models/test_json_outlook.json') as f:
         raise RuntimeError(f"an expected error occurred when processing constraint {constraint} in data {data}")
 
 # Test
-sol = Scheduler(6, [(1, 3), (2, 5)])
-sol.generate()
+# sol = Scheduler(6, [(1, 3), (2, 5)])
+# sol.generate()
 
-print(sol.fixture_table)
-shared_venue_constraints = [soft_constraint for soft_constraint in hard_constraints if isinstance(soft_constraint, SharedVenueConstraint)]
-
-assign_teams(teams, shared_venue_constraints[0].shared_venue_team_pairs)
+# print(sol.fixture_table)
+# shared_venue_constraints = [soft_constraint for soft_constraint in hard_constraints if isinstance(soft_constraint, SharedVenueConstraint)]
+#
+# assign_teams(teams, shared_venue_constraints[0].shared_venue_team_pairs)
