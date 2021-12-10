@@ -7,7 +7,7 @@ from sports_scheduling.models.constraints.opponent_constraint import OpponentCon
 from sports_scheduling.models.teams.teams import Team
 
 
-@patch('sports_scheduling.models.constraints.base_constraint.init_logging')
+@patch('sports_scheduling.models.constraints.base_constraint.get_logger')
 class OpponentConstraintTests(TestCase):
 
     def test_is_violated(self, _):

@@ -7,7 +7,7 @@ from sports_scheduling.models.constraints.shared_venue_constraint import SharedV
 from sports_scheduling.models.teams.teams import Team
 
 
-@patch('sports_scheduling.models.constraints.base_constraint.init_logging')
+@patch('sports_scheduling.models.constraints.base_constraint.get_logger')
 class SharedVenueConstraintTests(TestCase):
     def test_is_violated(self, _):
         teams = [
