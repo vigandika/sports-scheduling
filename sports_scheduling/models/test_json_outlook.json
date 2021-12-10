@@ -77,12 +77,6 @@
       "team1Id": 1,
       "team2Id": 2,
       "minimumGap": 18
-    },
-    {
-      "type": "fairnessConstraint",
-      "level": "SOFT",
-      "penalty": 2,
-      "consecutiveHardMatches": 3
     }
   ]
 }

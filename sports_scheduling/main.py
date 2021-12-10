@@ -14,9 +14,10 @@ simulated_annealing(initial_solution, teams, soft_constraints, hard_constraints)
 
 """
 
-from parse_data import teams, hard_constraints  # These will be taken from the request
+from parse_data import teams, hard_constraints, soft_constraints  # These will be taken from the request
 from sports_scheduling.models.constraints.shared_venue_constraint import SharedVenueConstraint
 from sports_scheduling.scheduler import Scheduler
+from sports_scheduling.simulated_annealing import SimulatedAnnealing
 from sports_scheduling.util import assign_teams, show_fixture_list
 
 shared_venue_constraints = [hard_constraint for hard_constraint in hard_constraints if isinstance(hard_constraint, SharedVenueConstraint)]
@@ -38,4 +39,5 @@ assign_teams(teams, shared_venue_constraint.shared_venue_team_pairs)
 # Show fixture list
 show_fixture_list(initial_solution)
 
-# SimulatedAnnealing.solve(initial_solution.fixture_table, teams, hard_constraints, soft_constraints)
+solution, _ = SimulatedAnnealing(hard_constraints, soft_constraints).run(initial_solution, teams)
+show_fixture_list(solution)
