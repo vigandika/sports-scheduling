@@ -45,3 +45,15 @@ class StaticVenueConstraintTests(TestCase):
         # then
         static_venue_constraint = StaticVenueConstraint(maximum=2)
         self.assertTrue(static_venue_constraint.is_violated(teams, fixture_table))
+
+        fixture_table = np.array(
+            [[0, 4, 1, 6, 3, 10],
+             [7, 0, 6, 8, 5, 1],
+             [9, 2, 0, 5, 7, 8],
+             [2, 3, 10, 0, 9, 4],
+             [8, 10, 4, 1, 0, 6],
+             [5, 9, 3, 7, 2, 0]]
+        )
+        # then
+        static_venue_constraint = StaticVenueConstraint(maximum=2)
+        self.assertTrue(static_venue_constraint.is_violated(teams, fixture_table))
