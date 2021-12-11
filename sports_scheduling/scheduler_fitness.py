@@ -31,5 +31,7 @@ class SchedulerFitness:
             if constraint.is_violated(teams, fixture_table):
                 self.logger.debug(f'violated soft constraint: {vars(constraint)}')
                 total_penalty_score += penalty
+            else:
+                self.logger.debug(f'didnt violate soft constraint: {vars(constraint)}')
 
         return total_penalty_score

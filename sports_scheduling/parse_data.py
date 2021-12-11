@@ -48,7 +48,7 @@ with open('../problem_instances/problem_2_teams_6_instance.json') as f:
                                                                matchweek=constraint['matchweek'], penalty=constraint['penalty']))
                 elif constraint['type'] == 'venueConstraint':
                     soft_constraints.append(VenueConstraint(team_id=constraint['teamId'], venue=constraint['venue'],
-                                                            matchweek=constraint['venue'], penalty=constraint['penalty']))
+                                                            matchweek=constraint['matchweek'], penalty=constraint['penalty']))
                 elif constraint['type'] == 'repeaterGapConstraint':
                     soft_constraints.append(RepeaterGapConstraint(team1_id=constraint['team1Id'], team2_id=constraint['team2Id'],
                                                                   minimum_gap=constraint['minimumGap'], penalty=constraint['penalty']))
