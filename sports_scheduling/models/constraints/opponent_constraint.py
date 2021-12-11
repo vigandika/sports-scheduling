@@ -12,6 +12,8 @@ class OpponentConstraint(BaseConstraint):
     def __init__(self, team_id: id, opponent_id: int, matchweek: int, penalty: int):
         """Forbid a team to play against an opponent in a given matchweek"""
         super().__init__(bracket='opponentConstraint', level='SOFT')
+
+        assert isinstance(team_id, int) and isinstance(opponent_id, int) and isinstance(matchweek, int) and isinstance(penalty, int)
         self.team_id = team_id
         self.opponent_id = opponent_id
         self.matchweek = matchweek

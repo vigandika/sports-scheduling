@@ -14,6 +14,8 @@ class StaticVenueConstraint(BaseConstraint):
     def __init__(self, maximum: int):
         """Limit the number of consecutive games a team can play in the same venue"""
         super().__init__(bracket='staticVenueConstraint', level='HARD')
+
+        assert isinstance(maximum, int)
         self.maximum = maximum
 
     def is_violated(self, teams: List[Team], fixture_table: ndarray) -> bool:
