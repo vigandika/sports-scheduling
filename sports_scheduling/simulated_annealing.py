@@ -55,6 +55,8 @@ class SimulatedAnnealing:
                 current_temp -= alpha
 
         self.logger.info(f'final fitness: {self.fitness.get_fitness_value(current_state, current_teams)}')
+        self.logger.debug(f'final state {current_state} with teams {[vars(team) for team in current_teams]}')
+
         return current_state, current_teams
 
     def get_random_neighbor(self, state: ndarray, teams: List[Team]) -> Tuple[ndarray, List[Team]]:
