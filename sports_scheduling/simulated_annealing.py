@@ -22,8 +22,8 @@ class SimulatedAnnealing:
         # initial_temperature = config['simulated_annealing']['initial_temp']
         # cooling_rate = config['simulated_annealing']['cooling_rate']
         #
-        initial_temp = 90
-        final_temp = .1
+        initial_temp = 125
+        final_temp = 0.1
         alpha = 0.01
 
         current_temp = initial_temp
@@ -52,7 +52,7 @@ class SimulatedAnnealing:
                         current_state, current_teams = neighbor_state, neighbor_teams
 
                 # decrement the temperature
-                current_temp -= alpha
+                current_temp -= alpha  # ? Decrement when no feasible solution is found ?
 
         self.logger.info(f'final fitness: {self.fitness.get_fitness_value(current_state, current_teams)}')
         self.logger.debug(f'final state {current_state} with teams {[vars(team) for team in current_teams]}')

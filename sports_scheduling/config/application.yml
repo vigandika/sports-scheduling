@@ -1,0 +1,9 @@
+10:
+  initial_temp: 125
+  final_temp: 0.1
+  alpha: 0.01
+
+6:
+  initial_temp: 90
+  final_temp: 0.1
+  alpha: 0.01

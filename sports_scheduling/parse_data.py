@@ -18,7 +18,7 @@ from sports_scheduling.util import assign_teams
 teams: List[Team] = []
 soft_constraints: List[BaseConstraint] = []
 hard_constraints: List[BaseConstraint] = []
-with open('../problem_instances/problem_2_teams_6_instance.json') as f:
+with open('../problem_instances/problem_3_teams_10_instance.json') as f:
     data = json.load(f)
     try:
         for team in data["teams"]:
