@@ -45,9 +45,6 @@ def get_indexes_of_shared_venue_teams(number_of_teams: int, number_of_shared_ven
     return indexes_of_shared_venue_teams
 
 
-team_index_mapping: Dict[int, Team] = {}
-
-
 def assign_teams(teams: List[Team], shared_venue_team_pairs: List[Tuple[int, int]]):
     available_indexes = [i for i in range(len(teams))]
     number_of_shared_venue_team_pairs = len(shared_venue_team_pairs)
@@ -80,11 +77,14 @@ def assign_teams(teams: List[Team], shared_venue_team_pairs: List[Tuple[int, int
 def __assign_team_to_index(team: Team, index_to_assign: int):
     logger.debug(f'setting index {index_to_assign} to team with ID {team.id}')
     team.assigned_index = index_to_assign
-    team_index_mapping[index_to_assign] = team
 
 
-def show_fixture_list(fixture_table: ndarray):
-    assert team_index_mapping, '`team_index_mapping` is empty. Method `assign_teams` should be executed first to assign teams to an index'
+def print_fixture_list(fixture_table: ndarray, teams: List[Team]):
+    # Create team index mapping to avoid overusing of a potential get_team_by_index method
+    team_index_mapping: Dict[int, Team] = {}
+    for team in teams:
+        team_index_mapping[team.assigned_index] = team
+
     no_of_games_per_round = len(fixture_table) // 2
     for matchweek in range((len(fixture_table) - 1) * 2):
         # get coordinates ((x1,x2,xn...), (y1,y2,yn...)) where condition
@@ -93,6 +93,7 @@ def show_fixture_list(fixture_table: ndarray):
             MATCHWEEK {matchweek + 1}:
         """
         for game in range(no_of_games_per_round):
-            matchweek_fixtures = f"{matchweek_fixtures}\n\t\t{team_index_mapping[matchweek_coordinates[0][game]].name} - {team_index_mapping[matchweek_coordinates[1][game]].name}"
+            matchweek_fixtures = f"{matchweek_fixtures}\n\t\t{team_index_mapping[matchweek_coordinates[0][game]].name} - " \
+                                 f"{team_index_mapping[matchweek_coordinates[1][game]].name}"
 
         print(matchweek_fixtures)
