@@ -17,6 +17,8 @@ class SharedVenueConstraint(BaseConstraint):
                                         teams with ids 1 and 3 and the pair of teams with ids 2 and 4 are shared venue teams.
         """
         super().__init__(bracket='sharedVenueConstraint', level='HARD')
+
+        assert isinstance(shared_venue_team_pairs, List)
         self.no_of_shared_venue_team_pairs = len(shared_venue_team_pairs)
         self.shared_venue_team_pairs = shared_venue_team_pairs
 
@@ -38,4 +40,4 @@ class SharedVenueConstraint(BaseConstraint):
                 if matchweek in fixture_table[:, team_2.assigned_index] and matchweek != 0:
                     return True
 
-            return False
+        return False

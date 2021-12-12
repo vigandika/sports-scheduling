@@ -1,0 +1,40 @@
+{
+  "teams": [
+    {"id": 1, "name": "Prishtina", "category": "A"},
+    {"id": 2, "name": "Flamurtari", "category": "B"},
+    {"id": 3, "name": "Gjilani", "category": "C"},
+    {"id": 4, "name": "Drita", "category": "B"},
+    {"id": 5, "name": "Ferronikeli", "category": "C"},
+    {"id": 6, "name": "Llapi", "category": "C"}
+  ],
+  "constraints": [
+    {"type": "completeCycleConstraint", "level": "HARD"},
+    {"type": "encounterConstraint", "level": "HARD"},
+    {"type": "participationConstraint", "level": "HARD"},
+    {"type": "staticVenueConstraint", "level": "HARD", "maximum": 2},
+    {"type": "sharedVenueConstraint", "level": "HARD", "teams": [[1, 2], [3, 4]]},
+
+    {"type": "opponentConstraint", "level": "SOFT", "penalty": 5, "teamId": 4, "opponentId": 5, "matchweek": 3},
+    {"type": "opponentConstraint", "level": "SOFT", "penalty": 2, "teamId": 4, "opponentId": 2, "matchweek": 3},
+    {"type": "opponentConstraint", "level": "SOFT", "penalty": 3, "teamId": 1, "opponentId": 3,  "matchweek": 6},
+    {"type": "opponentConstraint", "level": "SOFT", "penalty": 1, "teamId": 1, "opponentId": 3,  "matchweek": 7},
+    {"type": "opponentConstraint", "level": "SOFT", "penalty": 1, "teamId": 2, "opponentId": 6,  "matchweek": 1},
+    {"type": "opponentConstraint", "level": "SOFT", "penalty": 4, "teamId": 2, "opponentId": 1,  "matchweek": 2},
+    {"type": "opponentConstraint", "level": "SOFT", "penalty": 5, "teamId": 5, "opponentId": 3,  "matchweek": 2},
+    {"type": "opponentConstraint", "level": "SOFT", "penalty": 2, "teamId": 5, "opponentId": 6, "matchweek": 10},
+
+    {"type": "venueConstraint", "level": "SOFT", "penalty": 2, "teamId": 1, "venue": "H", "matchweek": 3},
+    {"type": "venueConstraint", "level": "SOFT", "penalty": 2, "teamId": 3, "venue": "A", "matchweek": 6},
+    {"type": "venueConstraint", "level": "SOFT", "penalty": 1, "teamId": 5, "venue": "H", "matchweek": 8},
+    {"type": "venueConstraint", "level": "SOFT", "penalty": 4, "teamId": 6, "venue": "A", "matchweek": 7},
+    {"type": "venueConstraint", "level": "SOFT", "penalty": 3, "teamId": 2, "venue": "H", "matchweek": 7},
+    {"type": "venueConstraint", "level": "SOFT", "penalty": 4, "teamId": 3, "venue": "A", "matchweek": 4},
+    {"type": "venueConstraint", "level": "SOFT", "penalty": 5, "teamId": 1, "venue": "H", "matchweek": 1},
+
+    {"type": "repeaterGapConstraint", "level": "SOFT", "penalty": 3, "team1Id": 3, "team2Id": 2, "minimumGap": 5},
+    {"type": "repeaterGapConstraint", "level": "SOFT", "penalty": 1, "team1Id": 1, "team2Id": 2, "minimumGap": 4},
+    {"type": "repeaterGapConstraint", "level": "SOFT", "penalty": 5, "team1Id": 4, "team2Id": 6, "minimumGap": 7},
+    {"type": "repeaterGapConstraint", "level": "SOFT", "penalty": 2, "team1Id": 5, "team2Id": 1, "minimumGap": 3},
+    {"type": "repeaterGapConstraint", "level": "SOFT", "penalty": 3, "team1Id": 5, "team2Id": 3, "minimumGap": 6}
+  ]
+}

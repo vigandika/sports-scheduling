@@ -7,7 +7,7 @@ from sports_scheduling.models.constraints.static_venue_constraint import StaticV
 from sports_scheduling.models.teams.teams import Team
 
 
-@patch('sports_scheduling.models.constraints.base_constraint.init_logging')
+@patch('sports_scheduling.models.constraints.base_constraint.get_logger')
 class StaticVenueConstraintTests(TestCase):
     def test_is_violated(self, _):
         teams = [
@@ -42,6 +42,18 @@ class StaticVenueConstraintTests(TestCase):
             [5, 6, 2, 8, 0, 9],
             [1, 3, 10, 7, 4, 0],
         ])
+        # then
+        static_venue_constraint = StaticVenueConstraint(maximum=2)
+        self.assertTrue(static_venue_constraint.is_violated(teams, fixture_table))
+
+        fixture_table = np.array(
+            [[0, 4, 1, 6, 3, 10],
+             [7, 0, 6, 8, 5, 1],
+             [9, 2, 0, 5, 7, 8],
+             [2, 3, 10, 0, 9, 4],
+             [8, 10, 4, 1, 0, 6],
+             [5, 9, 3, 7, 2, 0]]
+        )
         # then
         static_venue_constraint = StaticVenueConstraint(maximum=2)
         self.assertTrue(static_venue_constraint.is_violated(teams, fixture_table))

@@ -7,11 +7,11 @@ from sports_scheduling.models.constraints.complete_cycle_constraint import Compl
 from sports_scheduling.models.teams.teams import Team
 
 
-@patch('sports_scheduling.models.constraints.base_constraint.init_logging')
+@patch('sports_scheduling.models.constraints.base_constraint.get_logger')
 class CompleteCycleConstraintTests(TestCase):
 
     @classmethod
-    @patch('sports_scheduling.models.constraints.base_constraint.init_logging')
+    @patch('sports_scheduling.models.constraints.base_constraint.get_logger')
     def setUpClass(cls, _):
         cls.complete_cycle_constraint = CompleteCycleConstraint()
 

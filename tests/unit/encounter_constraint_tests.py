@@ -7,11 +7,11 @@ from sports_scheduling.models.constraints.encounter_constraint import EncounterC
 from sports_scheduling.models.teams.teams import Team
 
 
-@patch('sports_scheduling.models.constraints.base_constraint.init_logging')
+@patch('sports_scheduling.models.constraints.base_constraint.get_logger')
 class EncounterConstraintTests(TestCase):
 
     @classmethod
-    @patch('sports_scheduling.models.constraints.base_constraint.init_logging')
+    @patch('sports_scheduling.models.constraints.base_constraint.get_logger')
     def setUpClass(cls, _):
         cls.encounter_constraint = EncounterConstraint()
 

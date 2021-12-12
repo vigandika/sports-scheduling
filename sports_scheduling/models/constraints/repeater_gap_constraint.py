@@ -12,6 +12,8 @@ class RepeaterGapConstraint(BaseConstraint):
     def __init__(self, team1_id: int, team2_id: int, minimum_gap: int, penalty: int):
         """The minimum number of rounds to be played before two teams meet for the second time"""
         super().__init__(bracket='repeaterGapConstraint', level='SOFT')
+
+        assert isinstance(team1_id, int) and isinstance(team2_id, int) and isinstance(minimum_gap, int) and isinstance(penalty, int)
         self.team1_id = team1_id
         self.team2_id = team2_id
         self.minimum_gap = minimum_gap
@@ -26,8 +28,8 @@ class RepeaterGapConstraint(BaseConstraint):
         first_game = fixture_table[team_1.assigned_index, team_2.assigned_index]
         second_game = fixture_table[team_2.assigned_index, team_1.assigned_index]
 
-        if abs(first_game - second_game) < self.minimum_gap:
-            # If there are less than `self.minimum_gap` matchweeks between the two matches of the two teams, the constraint is violated
-            return True
-        else:
+        if abs(first_game - second_game) > self.minimum_gap:
+            # If there are more than `self.minimum_gap` matchweeks between the two matches of the two teams, the constraint is not violated
             return False
+        else:
+            return True

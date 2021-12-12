@@ -14,6 +14,8 @@ class StaticVenueConstraint(BaseConstraint):
     def __init__(self, maximum: int):
         """Limit the number of consecutive games a team can play in the same venue"""
         super().__init__(bracket='staticVenueConstraint', level='HARD')
+
+        assert isinstance(maximum, int)
         self.maximum = maximum
 
     def is_violated(self, teams: List[Team], fixture_table: ndarray) -> bool:
@@ -22,7 +24,7 @@ class StaticVenueConstraint(BaseConstraint):
             # Remove zeros
             matchweeks = [matchweek for matchweek in home_fixture_list if matchweek != 0]
             matchweeks.sort()
-            for k, g in groupby(enumerate(home_fixture_list), lambda x: x[0] - x[1]):
+            for k, g in groupby(enumerate(matchweeks), lambda x: x[0] - x[1]):
                 group = (map(itemgetter(1), g))
                 group = list(map(int, group))
 
@@ -34,7 +36,7 @@ class StaticVenueConstraint(BaseConstraint):
             # Remove zeros
             matchweeks = [matchweek for matchweek in away_fixture_list if matchweek != 0]
             matchweeks.sort()
-            for k, g in groupby(enumerate(away_fixture_list), lambda x: x[0] - x[1]):
+            for k, g in groupby(enumerate(matchweeks), lambda x: x[0] - x[1]):
                 group = (map(itemgetter(1), g))
                 group = list(map(int, group))
 

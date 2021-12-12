@@ -12,6 +12,8 @@ class VenueConstraint(BaseConstraint):
     def __init__(self, team_id: int, venue: str, matchweek: int, penalty: int):
         """Forbid a team to play at a venue (H/A) in a certain matchweek"""
         super().__init__(bracket='venueConstraint', level='SOFT')
+
+        assert isinstance(team_id, int) and isinstance(matchweek, int) and isinstance(penalty, int)
         assert venue in ['H', 'A'], "venue should be one of 'H' (Home) or 'A' (Away)"
 
         self.team_id = team_id

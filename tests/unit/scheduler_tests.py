@@ -6,12 +6,12 @@ import numpy as np
 from sports_scheduling.scheduler import Scheduler
 
 
-@patch('sports_scheduling.scheduler.init_logging')
+@patch('sports_scheduling.scheduler.get_logger')
 class SchedulerTests(TestCase):
 
     def test_get_legal_value_one_dimension(self, _):
         # given
-        scheduler = Scheduler(6, 2)
+        scheduler = Scheduler(6, [(1, 2), (3, 4)])
 
         fixture_table = np.array([
             [1, 3, 4, 6, 0, 9],
@@ -74,7 +74,7 @@ class SchedulerTests(TestCase):
 
     def test_get_legal_value_two_dimensions(self, _):
         # given
-        scheduler = Scheduler(6, 2)
+        scheduler = Scheduler(6, [(1, 2), (3, 4)])
 
         fixture_table = np.array([
             [1, 3, 4, 7, 9, 0],
@@ -123,7 +123,7 @@ class SchedulerTests(TestCase):
 
     def test_get_legal_value_complementary_teams(self, _):
         # given
-        scheduler = Scheduler(6, 2)
+        scheduler = Scheduler(6, [(1, 2), (3, 4)])
 
         fixture_table = np.array([
             [1, 2, 4, 7, 9, 0],
@@ -162,7 +162,7 @@ class SchedulerTests(TestCase):
         self.assertIsNone(value)
 
     def test_check_n_consecutive_values(self, _):
-        scheduler = Scheduler(6, 2)
+        scheduler = Scheduler(6, [(1, 2), (3, 4)])
 
         self.assertTrue(scheduler.find_n_consecutive_values(3, np.array([1, 3, 4, 8, 9, 12, 15]), 2))
         self.assertTrue(scheduler.find_n_consecutive_values(3, np.array([1, 3, 4, 8, 9, 12, 15]), 5))

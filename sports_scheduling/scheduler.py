@@ -5,7 +5,7 @@ from typing import List, Optional, Tuple
 import numpy as np
 from numpy import ndarray
 
-from sports_scheduling.log import init_logging
+from sports_scheduling.log import get_logger
 from sports_scheduling.util import get_indexes_of_shared_venue_teams
 
 
@@ -13,7 +13,7 @@ class Scheduler:
 
     def __init__(self, number_of_teams: int, shared_venue_team_pairs: List[Tuple[int, int]]):
         # init logging
-        self.logger = init_logging().getLogger(__name__)
+        self.logger = get_logger(__name__)
         self.number_of_teams = number_of_teams
         self.shared_venue_team_pairs = shared_venue_team_pairs
         self.number_of_shared_venue_pairs = len(shared_venue_team_pairs)
