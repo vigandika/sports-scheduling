@@ -2,8 +2,9 @@ import logging
 
 
 class LoggingFormatter(logging.Formatter):
-    # https: // gist.github.com / vratiu / 9780109
-    grey = "\x1b[0;2m"
+    # https://gist.github.com/vratiu/9780109
+
+    grey = "\x1b[0;20m"
     yellow = "\x1b[0;33m"
     cyan = "\x1b[0;36m"
     red = "\x1b[0;50m"
