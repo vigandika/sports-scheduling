@@ -9,6 +9,7 @@ from sports_scheduling.models.teams.teams import Team
 
 @patch('sports_scheduling.models.constraints.base_constraint.get_logger')
 class SharedVenueConstraintTests(TestCase):
+
     def test_is_violated(self, _):
         teams = [
             Team(1, 'xyz', 'A'),
@@ -56,3 +57,29 @@ class SharedVenueConstraintTests(TestCase):
         ])
         shared_venue_constraint = SharedVenueConstraint(shared_venue_team_pairs=[(1, 3), (2, 4)])
         self.assertTrue(shared_venue_constraint.is_violated(teams, fixture_table))
+
+    def test_is_violated_second_pair(self, _):
+        f = np.array([[0, 4, 8, 1, 5, 10],
+                      [7, 0, 1, 5, 2, 8, ],
+                      [3, 9, 0, 2, 7, 6],
+                      [9, 6, 10, 0, 3, 4],
+                      [6, 10, 4, 8, 0, 1],
+                      [2, 3, 5, 7, 9, 0]])
+        teams = [
+            Team(1, 'xyz', 'A'),
+            Team(2, 'xyz', 'A'),
+            Team(3, 'xyz', 'A'),
+            Team(4, 'xyz', 'A'),
+            Team(5, 'xyz', 'A'),
+            Team(6, 'xyz', 'A'),
+        ]
+
+        teams[0].assigned_index = 2
+        teams[1].assigned_index = 0
+        teams[2].assigned_index = 3
+        teams[3].assigned_index = 4
+        teams[4].assigned_index = 1
+        teams[5].assigned_index = 5
+        # then
+        shared_venue_constraint = SharedVenueConstraint(shared_venue_team_pairs=[(1, 2), (3, 4)])
+        self.assertFalse(shared_venue_constraint.is_violated(teams, f))
