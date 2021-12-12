@@ -40,4 +40,4 @@ class SharedVenueConstraint(BaseConstraint):
                 if matchweek in fixture_table[:, team_2.assigned_index] and matchweek != 0:
                     return True
 
-            return False
+        return False

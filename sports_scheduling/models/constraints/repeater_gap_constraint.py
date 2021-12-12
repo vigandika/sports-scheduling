@@ -28,8 +28,8 @@ class RepeaterGapConstraint(BaseConstraint):
         first_game = fixture_table[team_1.assigned_index, team_2.assigned_index]
         second_game = fixture_table[team_2.assigned_index, team_1.assigned_index]
 
-        if abs(first_game - second_game) < self.minimum_gap:
-            # If there are less than `self.minimum_gap` matchweeks between the two matches of the two teams, the constraint is violated
-            return True
-        else:
+        if abs(first_game - second_game) > self.minimum_gap:
+            # If there are more than `self.minimum_gap` matchweeks between the two matches of the two teams, the constraint is not violated
             return False
+        else:
+            return True
