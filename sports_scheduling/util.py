@@ -132,6 +132,11 @@ def parse_data(data: dict) -> Tuple[List[Team], List[BaseConstraint], List[BaseC
     try:
         for team in data["teams"]:
             teams.append(Team(id=team['id'], name=team['name'], category=team['category']))
+
+        if len(teams) % 2 != 0:
+            # If the number of teams is odd, add team indicating a bye (https://en.wikipedia.org/wiki/Bye_(sports))
+            teams.append(Team(0, 'bye', None))
+
     except Exception:
         raise RuntimeError(f"an expected error occurred when processing team {team} in data {data}")
 

@@ -4,6 +4,6 @@ def print_from_response(response: dict):
             MATCHWEEK {matchweek.split('_')[-1]}:
         """
         for fixture in fixtures:
-            matchweek_fixtures = f"{matchweek_fixtures}\n\t\t{fixture['homeTeam']} - {fixture['homeTeam']}"
+            matchweek_fixtures = f"{matchweek_fixtures}\n\t\t{fixture['homeTeam']} - {fixture['awayTeam']}"
 
         print(matchweek_fixtures)
