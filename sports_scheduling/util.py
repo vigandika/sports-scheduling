@@ -100,6 +100,29 @@ def print_fixture_list(fixture_table: ndarray, teams: List[Team]):
         print(matchweek_fixtures)
 
 
+def get_solution_response(fixture_table: ndarray, teams: List[Team]):
+    team_index_mapping: Dict[int, Team] = {}
+    for team in teams:
+        team_index_mapping[team.assigned_index] = team
+
+    no_of_games_per_round = len(fixture_table) // 2
+    response_dict = {}
+    for matchweek in range((len(fixture_table) - 1) * 2):
+        # get coordinates ((x1,x2,xn...), (y1,y2,yn...)) where condition
+        matchweek_coordinates = np.where(fixture_table == matchweek + 1)
+        matchweek_fixtures = f"""
+            MATCHWEEK {matchweek + 1}:
+        """
+        response_dict[f"matchweek_{matchweek + 1}"] = []
+        for game in range(no_of_games_per_round):
+            response_dict[f"matchweek_{matchweek + 1}"].append({
+                "homeTeam": team_index_mapping[matchweek_coordinates[0][game]].name,
+                "awayTeam": team_index_mapping[matchweek_coordinates[1][game]].name
+            })
+
+    return response_dict
+
+
 def parse_data(data: dict) -> Tuple[List[Team], List[BaseConstraint], List[BaseConstraint]]:
     from sports_scheduling.models.constraints import CompleteCycleConstraint, EncounterConstraint, ParticipationConstraint, \
         StaticVenueConstraint, SharedVenueConstraint, OpponentConstraint, VenueConstraint, RepeaterGapConstraint, FairnessConstraint

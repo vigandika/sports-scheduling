@@ -4,7 +4,7 @@ from sports_scheduling.log import get_logger
 from sports_scheduling.models.constraints.shared_venue_constraint import SharedVenueConstraint
 from sports_scheduling.scheduler import Scheduler
 from sports_scheduling.simulated_annealing import SimulatedAnnealing
-from sports_scheduling.util import assign_teams, print_fixture_list, parse_data
+from sports_scheduling.util import assign_teams, parse_data, get_solution_response
 
 app = FastAPI()
 
@@ -41,12 +41,10 @@ async def generate_schedule(body: dict):
 
         # apply simulated annealing
         solution, teams = SimulatedAnnealing(hard_constraints, soft_constraints).run(initial_solution, teams)
-        print_fixture_list(solution, teams)
-        # json_string = json.dumps([ob.__dict__ for ob in teams])
-        # print(json_string)
+        response = get_solution_response(solution, teams)
 
     except Exception as e:
         logging.exception(f'an error occurred')
         response = {"error": f"{e}"}
 
-    return body
+    return response
