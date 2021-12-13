@@ -22,7 +22,7 @@ class SimulatedAnnealing:
         # initial_temperature = config['simulated_annealing']['initial_temp']
         # cooling_rate = config['simulated_annealing']['cooling_rate']
         #
-        initial_temp = 125
+        initial_temp = 5
         final_temp = 0.1
         alpha = 0.01
 
