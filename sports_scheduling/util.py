@@ -13,10 +13,29 @@ logger = get_logger(__name__)
 
 
 def get_team_by_id(teams: List[Team], id: int) -> Team:
+    """Get team from the set of ``teams`` received as argument matched with ``id``."""
     for team in teams:
         if team.id == id:
             return team
     raise LookupError(f'could not find team with id {id} in teams {teams}')
+
+
+__team_id_mapping = {}
+
+
+def get_unchanged_team_by_id(team_id: int) -> Team:
+    """
+    Get `team` by id leveraging a stored mapping.
+
+    The class :attr:``__team_id_mapping`` mapping is created during the parsing of the data and is unchanged afterwards.
+
+    The method is a more convenient option to get a team by its id than `get_team_by_id` as it makes use of a stored mapping instead of
+    having to iterate over a list and compare the id properties. Should be used when static properties of a team are of interest, like
+    ``name`` and ``category``. Since the mapping does not change after first being populated this method should not be used when wanting
+    to use dynamic properties of a team, like ``assigned_index``.
+    """
+    assert __team_id_mapping, 'team_id_mapping is accessed but it\'s empty'
+    return __team_id_mapping[team_id]
 
 
 indexes_of_shared_venue_teams: Optional[List[Tuple[int, int]]] = None
@@ -24,18 +43,18 @@ indexes_of_shared_venue_teams: Optional[List[Tuple[int, int]]] = None
 
 def get_indexes_of_shared_venue_teams(number_of_teams: int, number_of_shared_venue_team_pairs: int) -> List[Tuple[int, int]]:
     """
-    Naturally, the teams with the schedules becoming closest to being opposites (when
-        one plays A the other plays H and Vice versa) are the teams
-            * 1 and x where x is n/2 (if even) n/2 + 1 (if odd)
-            if n is 10:
-            1 and 5
-        # Get indexes of shared venue teams
-        indexes_of_shared_venue_teams = [(i, math.ceil(no_of_teams / 2 + i - 1)) for i in range(number_of_shared_venue_pairs)]
-            team 1 and 5 (index 0 and 4)
-            2 and 6 (1 and 5)
-            3 and 7 (2 and 6)
-            ...
-    The maximum number of shared Venue teams that result with n-teams competitions is TODO
+    Get pairs of indexes in the fixture table that have an opposite schedule and can be assigned to shared venue teams.
+
+    Naturally, after the fixture table is generated using the Berger's tables algorithm (https://fr.wikipedia.org/wiki/Table_de_Berger),
+    the teams with schedules closest to being opposites (when one plays Home, the other plays Away and vice versa) are the teams assigned to
+    the first index (first row & first column - one based) and the n/2 index (if even) or n/2 + 1 (if odd), n being the number of teams.
+    For example, if the number of teams is 10, indexes 1 and 5 will be indexes that are to be assigned to the pair of teams that share a
+    venue. The next indexes pairs follow an ascending order from the first values [(1,5), (2,6), (3,7)...].
+    The number of possible shared venue pairs is of course dependent on the total number of teams participating in the competition.
+
+    :param number_of_teams: The number of teams
+    :param number_of_shared_venue_team_pairs: The number of shared venue team pairs
+    :return: A list containing the pairs of indexes that are to be assigned to shared venue team pairs
     """
     global indexes_of_shared_venue_teams
 
@@ -80,26 +99,6 @@ def __assign_team_to_index(team: Team, index_to_assign: int):
     team.assigned_index = index_to_assign
 
 
-def print_fixture_list(fixture_table: ndarray, teams: List[Team]):
-    # Create team index mapping to avoid overusing of a potential get_team_by_index method
-    team_index_mapping: Dict[int, Team] = {}
-    for team in teams:
-        team_index_mapping[team.assigned_index] = team
-
-    no_of_games_per_round = len(fixture_table) // 2
-    for matchweek in range((len(fixture_table) - 1) * 2):
-        # get coordinates ((x1,x2,xn...), (y1,y2,yn...)) where condition
-        matchweek_coordinates = np.where(fixture_table == matchweek + 1)
-        matchweek_fixtures = f"""
-            MATCHWEEK {matchweek + 1}:
-        """
-        for game in range(no_of_games_per_round):
-            matchweek_fixtures = f"{matchweek_fixtures}\n\t\t{team_index_mapping[matchweek_coordinates[0][game]].name} - " \
-                                 f"{team_index_mapping[matchweek_coordinates[1][game]].name}"
-
-        print(matchweek_fixtures)
-
-
 def get_solution_response(fixture_table: ndarray, teams: List[Team]):
     team_index_mapping: Dict[int, Team] = {}
     for team in teams:
@@ -134,8 +133,9 @@ def parse_data(data: dict) -> Tuple[List[Team], List[BaseConstraint], List[BaseC
 
     try:
         for team in data["teams"]:
-            teams.append(Team(id=team['id'], name=team['name'], category=team['category']))
-
+            team_obj = Team(id=team['id'], name=team['name'], category=team.get('category'))
+            teams.append(team_obj)
+            __team_id_mapping[team['id']] = team_obj
         if len(teams) % 2 != 0:
             # If the number of teams is odd, add team indicating a bye (https://en.wikipedia.org/wiki/Bye_(sports))
             teams.append(Team(0, 'bye', None))
@@ -179,3 +179,23 @@ def parse_data(data: dict) -> Tuple[List[Team], List[BaseConstraint], List[BaseC
         raise RuntimeError(f"an expected error occurred when processing constraints in data {data}")
 
     return teams, hard_constraints, soft_constraints
+
+
+def print_fixture_list(fixture_table: ndarray, teams: List[Team]):
+    # Create team index mapping to avoid overusing of a potential get_team_by_index method
+    team_index_mapping: Dict[int, Team] = {}
+    for team in teams:
+        team_index_mapping[team.assigned_index] = team
+
+    no_of_games_per_round = len(fixture_table) // 2
+    for matchweek in range((len(fixture_table) - 1) * 2):
+        # get coordinates ((x1,x2,xn...), (y1,y2,yn...)) where condition
+        matchweek_coordinates = np.where(fixture_table == matchweek + 1)
+        matchweek_fixtures = f"""
+            MATCHWEEK {matchweek + 1}:
+        """
+        for game in range(no_of_games_per_round):
+            matchweek_fixtures = f"{matchweek_fixtures}\n\t\t{team_index_mapping[matchweek_coordinates[0][game]].name} - " \
+                                 f"{team_index_mapping[matchweek_coordinates[1][game]].name}"
+
+        print(matchweek_fixtures)
