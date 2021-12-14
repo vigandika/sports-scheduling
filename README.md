@@ -1,4 +1,4 @@
-# sports-scheduling
+# sports-scheduling ⚽⏱
 
 ## Problem ☔
 
