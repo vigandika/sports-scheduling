@@ -129,6 +129,9 @@ def parse_data(data: dict) -> Tuple[List[Team], List[BaseConstraint], List[BaseC
     soft_constraints: List[BaseConstraint] = []
     hard_constraints: List[BaseConstraint] = []
 
+    if len(data.get("teams")) < 5:
+        raise ValueError('the number of teams should be at least 5')
+
     try:
         for team in data["teams"]:
             teams.append(Team(id=team['id'], name=team['name'], category=team['category']))
@@ -138,7 +141,7 @@ def parse_data(data: dict) -> Tuple[List[Team], List[BaseConstraint], List[BaseC
             teams.append(Team(0, 'bye', None))
 
     except Exception:
-        raise RuntimeError(f"an expected error occurred when processing team {team} in data {data}")
+        raise RuntimeError(f"an expected error occurred when processing teams in data {data}")
 
     try:
         for constraint in data['constraints']:
@@ -154,7 +157,7 @@ def parse_data(data: dict) -> Tuple[List[Team], List[BaseConstraint], List[BaseC
                 elif constraint['type'] == 'sharedVenueConstraint':
                     hard_constraints.append(SharedVenueConstraint(shared_venue_team_pairs=constraint['teams']))
                 else:
-                    raise TypeError(f"unrecognized hard constraint type '{constraint['type']}'")
+                    raise ValueError(f"unrecognized hard constraint type '{constraint['type']}'")
 
             elif constraint['level'] == 'SOFT':
                 if constraint['type'] == 'opponentConstraint':
@@ -169,10 +172,10 @@ def parse_data(data: dict) -> Tuple[List[Team], List[BaseConstraint], List[BaseC
                 elif constraint['type'] == 'fairnessConstraint':
                     soft_constraints.append(FairnessConstraint(consecutive_hard_matches=constraint['consecutiveHardMatches']))
                 else:
-                    raise TypeError(f"unrecognized soft constraint type '{constraint['type']}'")
+                    raise ValueError(f"unrecognized soft constraint type '{constraint['type']}'")
             else:
-                raise TypeError(f"unrecognized level type '{constraint['type']}'")
+                raise ValueError(f"unrecognized level type '{constraint['type']}'")
     except Exception:
-        raise RuntimeError(f"an expected error occurred when processing constraint {constraint} in data {data}")
+        raise RuntimeError(f"an expected error occurred when processing constraints in data {data}")
 
     return teams, hard_constraints, soft_constraints
