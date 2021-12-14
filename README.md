@@ -17,6 +17,9 @@ soft constraints.
 * `VenueConstraint (SOFT)` - Forbid a team to play at a venue (H/A) in a certain matchweek
 * `RepeaterGapConstraint (SOFT)` - Regulate the minimum number of rounds to be played before two teams meet for the second time
 
+## Requirements
+* Python 3 (tested with 3.8)
+* [Conda](https://conda.io/)
 
 ## Environment
 
