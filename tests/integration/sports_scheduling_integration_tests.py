@@ -30,3 +30,9 @@ class Test(IsolatedAsyncioTestCase):
             data = json.load(data_file)
         result = await generate_schedule(data)
         print_from_response(result)
+
+    async def test_generate_schedule_20_teams(self):
+        with open('problem_instances/problem_teams_20_instance_1.json') as data_file:
+            data = json.load(data_file)
+        result = await generate_schedule(data)
+        print_from_response(result)
