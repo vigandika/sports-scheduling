@@ -11,14 +11,8 @@ app = FastAPI()
 logging = get_logger(__name__)
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
 @app.post("/schedule")
 async def generate_schedule(body: dict):
-    # print(body)
     try:
         teams, hard_constraints, soft_constraints = parse_data(body)
         shared_venue_constraints = [constraint for constraint in hard_constraints if isinstance(constraint, SharedVenueConstraint)]
