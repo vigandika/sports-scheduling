@@ -6,6 +6,7 @@ import numpy as np
 from numpy import ndarray
 
 from sports_scheduling.log import get_logger
+from sports_scheduling.models.constraints.base_constraint import BaseConstraint
 from sports_scheduling.models.teams.teams import Team
 
 logger = get_logger(__name__)
@@ -97,3 +98,84 @@ def print_fixture_list(fixture_table: ndarray, teams: List[Team]):
                                  f"{team_index_mapping[matchweek_coordinates[1][game]].name}"
 
         print(matchweek_fixtures)
+
+
+def get_solution_response(fixture_table: ndarray, teams: List[Team]):
+    team_index_mapping: Dict[int, Team] = {}
+    for team in teams:
+        team_index_mapping[team.assigned_index] = team
+
+    no_of_games_per_round = len(fixture_table) // 2
+    response_dict = {}
+    for matchweek in range((len(fixture_table) - 1) * 2):
+        # get coordinates ((x1,x2,xn...), (y1,y2,yn...)) where condition
+        matchweek_coordinates = np.where(fixture_table == matchweek + 1)
+
+        response_dict[f"matchweek_{matchweek + 1}"] = []
+        for game in range(no_of_games_per_round):
+            response_dict[f"matchweek_{matchweek + 1}"].append({
+                "homeTeam": team_index_mapping[matchweek_coordinates[0][game]].name,
+                "awayTeam": team_index_mapping[matchweek_coordinates[1][game]].name
+            })
+
+    return response_dict
+
+
+def parse_data(data: dict) -> Tuple[List[Team], List[BaseConstraint], List[BaseConstraint]]:
+    from sports_scheduling.models.constraints import CompleteCycleConstraint, EncounterConstraint, ParticipationConstraint, \
+        StaticVenueConstraint, SharedVenueConstraint, OpponentConstraint, VenueConstraint, RepeaterGapConstraint, FairnessConstraint
+
+    teams: List[Team] = []
+    soft_constraints: List[BaseConstraint] = []
+    hard_constraints: List[BaseConstraint] = []
+
+    if len(data.get("teams")) < 5:
+        raise ValueError('the number of teams should be at least 5')
+
+    try:
+        for team in data["teams"]:
+            teams.append(Team(id=team['id'], name=team['name'], category=team['category']))
+
+        if len(teams) % 2 != 0:
+            # If the number of teams is odd, add team indicating a bye (https://en.wikipedia.org/wiki/Bye_(sports))
+            teams.append(Team(0, 'bye', None))
+
+    except Exception:
+        raise RuntimeError(f"an expected error occurred when processing teams in data {data}")
+
+    try:
+        for constraint in data['constraints']:
+            if constraint['level'] == 'HARD':
+                if constraint['type'] == 'completeCycleConstraint':
+                    hard_constraints.append(CompleteCycleConstraint())
+                elif constraint['type'] == 'encounterConstraint':
+                    hard_constraints.append(EncounterConstraint())
+                elif constraint['type'] == 'participationConstraint':
+                    hard_constraints.append(ParticipationConstraint())
+                elif constraint['type'] == 'staticVenueConstraint':
+                    hard_constraints.append(StaticVenueConstraint(maximum=constraint['maximum']))
+                elif constraint['type'] == 'sharedVenueConstraint':
+                    hard_constraints.append(SharedVenueConstraint(shared_venue_team_pairs=constraint['teams']))
+                else:
+                    raise ValueError(f"unrecognized hard constraint type '{constraint['type']}'")
+
+            elif constraint['level'] == 'SOFT':
+                if constraint['type'] == 'opponentConstraint':
+                    soft_constraints.append(OpponentConstraint(team_id=constraint['teamId'], opponent_id=constraint['opponentId'],
+                                                               matchweek=constraint['matchweek'], penalty=constraint['penalty']))
+                elif constraint['type'] == 'venueConstraint':
+                    soft_constraints.append(VenueConstraint(team_id=constraint['teamId'], venue=constraint['venue'],
+                                                            matchweek=constraint['matchweek'], penalty=constraint['penalty']))
+                elif constraint['type'] == 'repeaterGapConstraint':
+                    soft_constraints.append(RepeaterGapConstraint(team1_id=constraint['team1Id'], team2_id=constraint['team2Id'],
+                                                                  minimum_gap=constraint['minimumGap'], penalty=constraint['penalty']))
+                elif constraint['type'] == 'fairnessConstraint':
+                    soft_constraints.append(FairnessConstraint(consecutive_hard_matches=constraint['consecutiveHardMatches']))
+                else:
+                    raise ValueError(f"unrecognized soft constraint type '{constraint['type']}'")
+            else:
+                raise ValueError(f"unrecognized level type '{constraint['type']}'")
+    except Exception:
+        raise RuntimeError(f"an expected error occurred when processing constraints in data {data}")
+
+    return teams, hard_constraints, soft_constraints
