@@ -155,22 +155,45 @@ def parse_data(data: dict) -> Tuple[List[Team], List[BaseConstraint], List[BaseC
                 elif constraint['type'] == 'staticVenueConstraint':
                     hard_constraints.append(StaticVenueConstraint(maximum=constraint['maximum']))
                 elif constraint['type'] == 'sharedVenueConstraint':
-                    hard_constraints.append(SharedVenueConstraint(shared_venue_team_pairs=constraint['teams']))
+                    hard_constraints.append(SharedVenueConstraint(shared_venue_team_pairs=constraint['teamPairs']))
                 else:
                     raise ValueError(f"unrecognized hard constraint type '{constraint['type']}'")
 
             elif constraint['level'] == 'SOFT':
                 if constraint['type'] == 'opponentConstraint':
-                    soft_constraints.append(OpponentConstraint(team_id=constraint['teamId'], opponent_id=constraint['opponentId'],
-                                                               matchweek=constraint['matchweek'], penalty=constraint['penalty']))
+                    soft_constraints.append(
+                        OpponentConstraint(
+                            team_id=constraint['teamId'],
+                            opponent_id=constraint['opponentId'],
+                            matchweek=constraint['matchweek'],
+                            penalty=constraint['penalty'],
+                        )
+                    )
                 elif constraint['type'] == 'venueConstraint':
-                    soft_constraints.append(VenueConstraint(team_id=constraint['teamId'], venue=constraint['venue'],
-                                                            matchweek=constraint['matchweek'], penalty=constraint['penalty']))
+                    soft_constraints.append(
+                        VenueConstraint(
+                            team_id=constraint['teamId'],
+                            venue=constraint['venue'],
+                            matchweek=constraint['matchweek'],
+                            penalty=constraint['penalty'],
+                        )
+                    )
                 elif constraint['type'] == 'repeaterGapConstraint':
-                    soft_constraints.append(RepeaterGapConstraint(team1_id=constraint['team1Id'], team2_id=constraint['team2Id'],
-                                                                  minimum_gap=constraint['minimumGap'], penalty=constraint['penalty']))
+                    soft_constraints.append(
+                        RepeaterGapConstraint(
+                            team1_id=constraint['team1Id'],
+                            team2_id=constraint['team2Id'],
+                            minimum_gap=constraint['minimumGap'],
+                            penalty=constraint['penalty'],
+                        )
+                    )
                 elif constraint['type'] == 'fairnessConstraint':
-                    soft_constraints.append(FairnessConstraint(consecutive_hard_matches=constraint['consecutiveHardMatches']))
+                    soft_constraints.append(
+                        FairnessConstraint(
+                            consecutive_hard_matches=constraint['consecutiveHardMatches'],
+                            penalty=constraint['penalty'],
+                        )
+                    )
                 else:
                     raise ValueError(f"unrecognized soft constraint type '{constraint['type']}'")
             else:

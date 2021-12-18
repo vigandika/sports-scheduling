@@ -26,7 +26,7 @@
     {"type": "encounterConstraint", "level": "HARD"},
     {"type": "participationConstraint", "level": "HARD"},
     {"type": "staticVenueConstraint", "level": "HARD", "maximum": 3},
-    {"type": "sharedVenueConstraint", "level": "HARD", "teams": [[1, 5], [2, 14], [6, 7], [3, 4]]},
+    {"type": "sharedVenueConstraint", "level": "HARD", "teamPairs": [[1, 5], [2, 14], [6, 7], [3, 4]]},
 
     {"type": "opponentConstraint", "level": "SOFT", "penalty": 1, "teamId": 4, "opponentId": 6, "matchweek": 5},
     {"type": "opponentConstraint", "level": "SOFT", "penalty": 2, "teamId": 3, "opponentId": 7, "matchweek": 15},
