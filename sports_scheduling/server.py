@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from sports_scheduling.log import get_logger
 from sports_scheduling.models.constraints.shared_venue_constraint import SharedVenueConstraint
@@ -10,6 +11,16 @@ app = FastAPI()
 
 logging = get_logger(__name__)
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+# REMOVE THIS IN PROD
 
 @app.post("/schedule")
 async def generate_schedule(body: dict):
@@ -23,7 +34,7 @@ async def generate_schedule(body: dict):
         elif len(shared_venue_constraints) == 1:
             shared_venue_constraint = shared_venue_constraints[0]
         else:
-            shared_venue_constraint = []
+            shared_venue_constraint = []  # TODO FIX THIS
 
         # generate initial solution
         scheduler = Scheduler(number_of_teams=len(teams), shared_venue_team_pairs=shared_venue_constraint.shared_venue_team_pairs)
