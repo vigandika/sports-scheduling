@@ -31,7 +31,7 @@ async def generate_schedule(body: dict):
         initial_solution = scheduler.fixture_table
 
         # assign indexes
-        assign_teams(teams, shared_venue_constraint.shared_venue_team_pairs)
+        assign_teams(teams, shared_venue_constraint.shared_venue_team_pairs, scheduler.indexes_of_shared_venue_teams)
 
         # apply simulated annealing
         solution, teams = SimulatedAnnealing(hard_constraints, soft_constraints).run(initial_solution, teams)

@@ -1,6 +1,5 @@
-import math
 import random
-from typing import List, Tuple, Optional, Dict
+from typing import List, Tuple, Dict
 
 import numpy as np
 from numpy import ndarray
@@ -46,10 +45,14 @@ def get_team_by_index(teams: List[Team], index: int) -> Team:
     raise LookupError(f'could not find team with id {index} in teams {teams}')
 
 
-indexes_of_shared_venue_teams: Optional[List[Tuple[int, int]]] = None
-
-
-def assign_teams(teams: List[Team], shared_venue_team_pairs: List[Tuple[int, int]]):
+def assign_teams(teams: List[Team], shared_venue_team_pairs: List[Tuple[int, int]], indexes_of_shared_venue_teams: List[Tuple[int, int]]):
+    """
+    TODO
+    :param teams:
+    :param shared_venue_team_pairs:
+    :param indexes_of_shared_venue_teams:
+    :return:
+    """
     available_indexes = [i for i in range(len(teams))]
     number_of_shared_venue_team_pairs = len(shared_venue_team_pairs)
     # assign shared venue teams first if there are any
