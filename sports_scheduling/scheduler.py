@@ -1,3 +1,4 @@
+import math
 from itertools import groupby
 from operator import itemgetter
 from typing import List, Optional, Tuple
@@ -6,7 +7,6 @@ import numpy as np
 from numpy import ndarray
 
 from sports_scheduling.log import get_logger
-from sports_scheduling.util import get_indexes_of_shared_venue_teams
 
 
 class Scheduler:
@@ -17,6 +17,7 @@ class Scheduler:
         self.number_of_teams = number_of_teams
         self.shared_venue_team_pairs = shared_venue_team_pairs
         self.number_of_shared_venue_pairs = len(shared_venue_team_pairs)
+        self.indexes_of_shared_venue_teams: Optional[List[Tuple[int, int]]] = None
         self.fixture_table = np.zeros((number_of_teams, number_of_teams), dtype='int')
 
     def generate(self):
@@ -94,7 +95,7 @@ class Scheduler:
         n = no_of_teams - 1
 
         # Get indexes of shared venue teams
-        indexes_of_shared_venue_teams = get_indexes_of_shared_venue_teams(no_of_teams, self.number_of_shared_venue_pairs)
+        indexes_of_shared_venue_teams = self.get_indexes_of_shared_venue_teams()
         self.logger.info(f'shared venue team indexes out of {no_of_teams} are {indexes_of_shared_venue_teams}'
                          f'(human readable: {[(x + 1, y + 1) for x, y in indexes_of_shared_venue_teams]})')
 
@@ -214,3 +215,24 @@ class Scheduler:
                 return True
 
         return False
+
+    def get_indexes_of_shared_venue_teams(self) -> List[Tuple[int, int]]:
+        """
+        Get pairs of indexes in the fixture table that have an opposite schedule and can be assigned to shared venue teams.
+
+        Naturally, after the fixture table is generated using the Berger's tables algorithm (https://fr.wikipedia.org/wiki/Table_de_Berger),
+        the teams with schedules closest to being opposites (when one plays Home, the other plays Away and vice versa) are the teams
+        assigned to the first index (first row & first column - one based) and the n/2 index (if even) or n/2 + 1 (if odd), n being the
+        number of teams.
+        For example, if the number of teams is 10, indexes 1 and 5 will be indexes that are to be assigned to the pair of teams that share a
+        venue. The next indexes pairs follow an ascending order from the first values [(1,5), (2,6), (3,7)...].
+        The number of possible shared venue pairs is of course dependent on the total number of teams participating in the competition.
+
+        :return: A list containing the pairs of indexes that are to be assigned to shared venue team pairs
+        """
+        if self.indexes_of_shared_venue_teams is not None:
+            return self.indexes_of_shared_venue_teams
+
+        self.indexes_of_shared_venue_teams = [(i, math.ceil(self.number_of_teams / 2 + i - 1)) for i in
+                                              range(self.number_of_shared_venue_pairs)]
+        return self.indexes_of_shared_venue_teams
