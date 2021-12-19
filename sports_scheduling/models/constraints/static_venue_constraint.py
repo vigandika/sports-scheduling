@@ -22,14 +22,14 @@ class StaticVenueConstraint(BaseConstraint):
         for home_fixture_list in schedule_table:
             # Remove zeros
             matchweeks = [matchweek for matchweek in home_fixture_list if matchweek != 0]
-            if contains_n_consecutive_numbers(matchweeks, self.maximum):
+            if contains_n_consecutive_numbers(matchweeks, self.maximum + 1):
                 return True
 
         # Iterate away fixtures in the transposed matrix
         for away_fixture_list in schedule_table.T:
             # Remove zeros
             matchweeks = [matchweek for matchweek in away_fixture_list if matchweek != 0]
-            if contains_n_consecutive_numbers(matchweeks, self.maximum):
+            if contains_n_consecutive_numbers(matchweeks, self.maximum + 1):
                 return True
 
         return False
