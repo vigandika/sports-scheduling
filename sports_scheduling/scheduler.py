@@ -20,6 +20,14 @@ class Scheduler:
         self.fixture_table = np.zeros((number_of_teams, number_of_teams), dtype='int')
 
     def generate(self):
+        """
+        Generate a schedule that will satisfy all hard constraints:
+        1) Every team should play exactly once at each matchweek (ParticipationConstraint)
+        2) Every team should play against every other team, once H and once A (EncounterConstraint)
+        3) Each team should play once against each other team before playing a team for the second time (CompleteCycleConstraint)
+        4) Each team will not play more than <b>2</b> consecutive games at the same venue (StaticVenueConstraint) - 2 is the minimum value
+        5) Shared Venue teams :attr:``shared_venue_team_pairs`` should have complementary H-A pattern
+        """
         self.fill_balanced_bergers_table()
         self.assign_last_team_matches()
 
@@ -78,16 +86,19 @@ class Scheduler:
         n = self.number_of_teams - 1
 
         # Get indexes of shared venue teams
-        indexes_of_shared_venue_teams = self.get_indexes_of_shared_venue_teams()
-        self.logger.info(f'shared venue team indexes out of {self.number_of_teams} are {indexes_of_shared_venue_teams}'
-                         f'(human readable: {[(x + 1, y + 1) for x, y in indexes_of_shared_venue_teams]})')
+        if self.number_of_shared_venue_pairs != 0:
+            indexes_of_shared_venue_teams = self.get_indexes_of_shared_venue_teams()
+            self.logger.info(f'shared venue team indexes out of {self.number_of_teams} are {indexes_of_shared_venue_teams}'
+                             f'(human readable: {[(x + 1, y + 1) for x, y in indexes_of_shared_venue_teams]})')
+        else:
+            indexes_of_shared_venue_teams = []
+            self.logger.info(f'no shared venue team pairs available')
 
         # Avoid modifying the object
         diagonal_values = self.fixture_table.diagonal().copy()
 
         # Before checking hard constraints make sure diagonal is set to zero so hard constraints violated by the diagonal are disregarded
-        np.fill_diagonal(self.fixture_table, np.zeros(self.number_of_shared_venue_pairs, dtype='int'))
-
+        np.fill_diagonal(self.fixture_table, 0)
         # Shared value teams will have only one conflict and it's the game in the lower index's diagonal
         # Change that to the match_week to be played in the second half of the season (reflection + n)
         for team_pair in indexes_of_shared_venue_teams:
@@ -128,8 +139,11 @@ class Scheduler:
                 self.fixture_table[team_pair[1], n] = valid_game_week
                 self.fixture_table[n, team_pair[1]] = valid_game_week - n
 
-        # Fill out remaining matches
-        for i in range(self.number_of_teams):
+        # Fill out remaining matches for last team
+        all_opponents = []
+        # Order matchweeks by balancing the distribution of first and second half of the season matchweeks
+        [all_opponents.extend([i, i + self.number_of_teams // 2]) for i in range(self.number_of_teams // 2)]
+        for i in all_opponents:
             if i == n:
                 # If last row and last column is reached (should be zero) the fixture is complete
                 break
@@ -174,7 +188,7 @@ class Scheduler:
 
             return tentative_value
 
-        self.logger.warning(f'could not add any of the tentative value {tentative_values} in {fixture_table}')
+        self.logger.warning(f'could not add any of the tentative value {tentative_values} in coordinates ({row}, {col}) in {fixture_table}')
         return None
 
     @staticmethod

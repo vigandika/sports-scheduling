@@ -20,12 +20,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
 # REMOVE THIS IN PROD
 
 @app.post("/schedule")
 async def generate_schedule(body: dict):
     try:
         teams, hard_constraints, soft_constraints = parse_data(body)
+
+        # Get shared venue team pairs
         shared_venue_constraints = [constraint for constraint in hard_constraints if isinstance(constraint, SharedVenueConstraint)]
 
         # Extract the number of shared venue team pairs
@@ -34,7 +38,7 @@ async def generate_schedule(body: dict):
         elif len(shared_venue_constraints) == 1:
             shared_venue_constraint = shared_venue_constraints[0]
         else:
-            shared_venue_constraint = []  # TODO FIX THIS
+            shared_venue_constraint = SharedVenueConstraint([])
 
         # generate initial solution
         scheduler = Scheduler(number_of_teams=len(teams), shared_venue_team_pairs=shared_venue_constraint.shared_venue_team_pairs)
