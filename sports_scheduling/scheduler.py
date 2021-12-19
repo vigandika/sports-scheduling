@@ -68,35 +68,19 @@ class Scheduler:
             2. some teams play more than 2 straight games in the same venue
 
         If we look closely, these violations occur only in the diagonal matchweeks - where teams play against each other.
-        The match-week where the team plays against itself (diagonal) actaully represent games that team plays against
-        the n-th team not included in the table yet
+        The matchweeks where the team plays against itself (diagonal) actually represent matchwweeks in which the team plays against
+        the n-th team not included in the table yet.
 
-        This method assign the opponents to the nth team, while being careful to respect the above mentioned 2 hard
-        constraints mentioned above
-
-        Identify the shared venue teams. Naturally, the teams with the schedules becoming closest to being opposites (when
-        one plays A the other plays H and Vice versa) are the teams
-            * 1 and x where x is n/2 (if even) n/2 + 1 (if odd)
-            if n is 10:
-            1 and 5
-        # Get indexes of shared venue teams
-        indexes_of_shared_venue_teams = [(i, math.ceil(no_of_teams / 2 + i - 1)) for i in range(number_of_shared_venue_pairs)]
-            2 and 6
-            3 and 7
-            ...
-
-        The maximum number of shared Venue teams that result with n-teams competitions is TODO
+        This method assign the opponents to the nth team, while being careful to respect the 2 hard constraints mentioned above.
         """
-        # Transfer match-weeks from diagonal to the n-th column (filled with zeros at the moment)
-        # print(fixture_table)
-
-        no_of_teams = len(self.fixture_table)
-        self.logger.info(f'number of teams is {no_of_teams}')
-        n = no_of_teams - 1
+        self.logger.info(f'number of teams is {self.number_of_teams}')
+        # `number_of_teams-1` represents the last team index (last column/row index) and the number of matchweeks for
+        # half season (before the matches start taking place for the second time)
+        n = self.number_of_teams - 1
 
         # Get indexes of shared venue teams
         indexes_of_shared_venue_teams = self.get_indexes_of_shared_venue_teams()
-        self.logger.info(f'shared venue team indexes out of {no_of_teams} are {indexes_of_shared_venue_teams}'
+        self.logger.info(f'shared venue team indexes out of {self.number_of_teams} are {indexes_of_shared_venue_teams}'
                          f'(human readable: {[(x + 1, y + 1) for x, y in indexes_of_shared_venue_teams]})')
 
         # Avoid modifying the object
@@ -146,7 +130,7 @@ class Scheduler:
                 self.fixture_table[n, team_pair[1]] = valid_game_week - n
 
         # Fill out remaining matches
-        for i in range(no_of_teams):
+        for i in range(self.number_of_teams):
             if i == n:
                 # If last row and last column is reached (should be zero) the fixture is complete
                 break
