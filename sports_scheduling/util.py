@@ -1,4 +1,6 @@
 import random
+from itertools import groupby
+from operator import itemgetter
 from typing import List, Tuple, Dict
 
 import numpy as np
@@ -43,6 +45,23 @@ def get_team_by_index(teams: List[Team], index: int) -> Team:
         if team.assigned_index == index:
             return team
     raise LookupError(f'could not find team with id {index} in teams {teams}')
+
+
+def contains_n_consecutive_numbers(numbers_list: List[int], number_of_consecutive_values: int):
+    """
+    TODO
+    :param numbers_list:
+    :param number_of_consecutive_values:
+    :return:
+    """
+    numbers_list.sort()
+    for k, g in groupby(enumerate(numbers_list), lambda x: x[0] - x[1]):
+        group = (map(itemgetter(1), g))
+        group = list(map(int, group))
+
+        if len(group) >= number_of_consecutive_values:
+            return True
+    return False
 
 
 def assign_teams(teams: List[Team], shared_venue_team_pairs: List[Tuple[int, int]], indexes_of_shared_venue_teams: List[Tuple[int, int]]):

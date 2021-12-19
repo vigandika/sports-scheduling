@@ -1,12 +1,11 @@
 import math
-from itertools import groupby
-from operator import itemgetter
 from typing import List, Optional, Tuple
 
 import numpy as np
 from numpy import ndarray
 
 from sports_scheduling.log import get_logger
+from sports_scheduling.util import contains_n_consecutive_numbers
 
 
 class Scheduler:
@@ -190,13 +189,8 @@ class Scheduler:
 
         # Remove zeros
         fixture_list = [match_week for match_week in fixture_list if match_week != 0]
-        fixture_list.sort()
-        for k, g in groupby(enumerate(fixture_list), lambda x: x[0] - x[1]):
-            group = (map(itemgetter(1), g))
-            group = list(map(int, group))
-
-            if len(group) >= n:
-                return True
+        if contains_n_consecutive_numbers(fixture_list, n):
+            return True
 
         return False
 
