@@ -1,9 +1,9 @@
 def print_from_response(response: dict):
-    for matchweek, fixtures in response.items():
+    for index, matchweek in enumerate(response['matchweeks']):
         matchweek_fixtures = f"""
-            MATCHWEEK {matchweek.split('_')[-1]}:
+            MATCHWEEK {index + 1}:
         """
-        for fixture in fixtures:
+        for fixture in matchweek['fixtures']:
             matchweek_fixtures = f"{matchweek_fixtures}\n\t\t{fixture['homeTeam']} - {fixture['awayTeam']}"
 
         print(matchweek_fixtures)
