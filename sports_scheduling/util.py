@@ -111,17 +111,18 @@ def get_solution_response(fixture_table: ndarray, teams: List[Team]):
         team_index_mapping[team.assigned_index] = team
 
     no_of_games_per_round = len(fixture_table) // 2
-    response_dict = {}
+    response_dict = {'matchweeks': []}
     for matchweek in range((len(fixture_table) - 1) * 2):
         # get coordinates ((x1,x2,xn...), (y1,y2,yn...)) where condition
         matchweek_coordinates = np.where(fixture_table == matchweek + 1)
 
-        response_dict[f"matchweek_{matchweek + 1}"] = []
+        matchweek_fixtures = {"fixtures": []}
         for game in range(no_of_games_per_round):
-            response_dict[f"matchweek_{matchweek + 1}"].append({
+            matchweek_fixtures["fixtures"].append({
                 "homeTeam": team_index_mapping[matchweek_coordinates[0][game]].name,
                 "awayTeam": team_index_mapping[matchweek_coordinates[1][game]].name
             })
+        response_dict['matchweeks'].append(matchweek_fixtures)
 
     return response_dict
 
