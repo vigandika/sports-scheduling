@@ -1,12 +1,11 @@
 import copy
-from itertools import groupby
-from operator import itemgetter
 from typing import List
 
 from numpy import ndarray
 
 from sports_scheduling.models.constraints.base_constraint import BaseConstraint
 from sports_scheduling.models.teams.teams import Team
+from sports_scheduling.util import contains_n_consecutive_numbers
 
 
 class StaticVenueConstraint(BaseConstraint):
@@ -23,24 +22,14 @@ class StaticVenueConstraint(BaseConstraint):
         for home_fixture_list in schedule_table:
             # Remove zeros
             matchweeks = [matchweek for matchweek in home_fixture_list if matchweek != 0]
-            matchweeks.sort()
-            for k, g in groupby(enumerate(matchweeks), lambda x: x[0] - x[1]):
-                group = (map(itemgetter(1), g))
-                group = list(map(int, group))
-
-                if len(group) > self.maximum:
-                    return True
+            if contains_n_consecutive_numbers(matchweeks, self.maximum + 1):
+                return True
 
         # Iterate away fixtures in the transposed matrix
         for away_fixture_list in schedule_table.T:
             # Remove zeros
             matchweeks = [matchweek for matchweek in away_fixture_list if matchweek != 0]
-            matchweeks.sort()
-            for k, g in groupby(enumerate(matchweeks), lambda x: x[0] - x[1]):
-                group = (map(itemgetter(1), g))
-                group = list(map(int, group))
-
-                if len(group) > self.maximum:
-                    return True
+            if contains_n_consecutive_numbers(matchweeks, self.maximum + 1):
+                return True
 
         return False

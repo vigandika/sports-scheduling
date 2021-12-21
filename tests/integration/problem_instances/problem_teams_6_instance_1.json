@@ -4,7 +4,7 @@
     {"id": 2, "name": "Flamurtari", "category": "B"},
     {"id": 3, "name": "Gjilani", "category": "C"},
     {"id": 4, "name": "Drita", "category": "B"},
-    {"id": 5, "name": "Ferronikeli", "category": "C"},
+    {"id": 5, "name": "Ferronikeli", "category": "A"},
     {"id": 6, "name": "Llapi", "category": "C"}
   ],
   "constraints": [
@@ -12,7 +12,7 @@
     {"type": "encounterConstraint", "level": "HARD"},
     {"type": "participationConstraint", "level": "HARD"},
     {"type": "staticVenueConstraint", "level": "HARD", "maximum": 3},
-    {"type": "sharedVenueConstraint", "level": "HARD", "teams": [[1, 2], [3, 4]]},
+    {"type": "sharedVenueConstraint", "level": "HARD", "teamPairs": [[1, 2], [3, 4]]},
 
     {"type": "opponentConstraint", "level": "SOFT", "penalty": 5, "teamId": 4, "opponentId": 5, "matchweek": 3},
     {"type": "opponentConstraint", "level": "SOFT", "penalty": 2, "teamId": 3, "opponentId": 1, "matchweek": 5},
@@ -26,6 +26,8 @@
 
     {"type": "repeaterGapConstraint", "level": "SOFT", "penalty": 3, "team1Id": 3, "team2Id": 2, "minimumGap": 5},
     {"type": "repeaterGapConstraint", "level": "SOFT", "penalty": 1, "team1Id": 1, "team2Id": 2, "minimumGap": 3},
-    {"type": "repeaterGapConstraint", "level": "SOFT", "penalty": 5, "team1Id": 4, "team2Id": 6, "minimumGap": 4}
+    {"type": "repeaterGapConstraint", "level": "SOFT", "penalty": 5, "team1Id": 4, "team2Id": 6, "minimumGap": 4},
+
+    {"type": "fairnessConstraint", "level": "SOFT", "penalty": 5, "consecutiveHardMatches": 2}
   ]
 }

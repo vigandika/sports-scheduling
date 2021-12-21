@@ -1,12 +1,11 @@
-from itertools import groupby
-from operator import itemgetter
+import math
 from typing import List, Optional, Tuple
 
 import numpy as np
 from numpy import ndarray
 
 from sports_scheduling.log import get_logger
-from sports_scheduling.util import get_indexes_of_shared_venue_teams
+from sports_scheduling.util import contains_n_consecutive_numbers
 
 
 class Scheduler:
@@ -17,9 +16,18 @@ class Scheduler:
         self.number_of_teams = number_of_teams
         self.shared_venue_team_pairs = shared_venue_team_pairs
         self.number_of_shared_venue_pairs = len(shared_venue_team_pairs)
+        self.indexes_of_shared_venue_teams: Optional[List[Tuple[int, int]]] = None
         self.fixture_table = np.zeros((number_of_teams, number_of_teams), dtype='int')
 
     def generate(self):
+        """
+        Generate a schedule that will satisfy all hard constraints:
+        1) Every team should play exactly once at each matchweek (ParticipationConstraint)
+        2) Every team should play against every other team, once H and once A (EncounterConstraint)
+        3) Each team should play once against each other team before playing a team for the second time (CompleteCycleConstraint)
+        4) Each team will not play more than <b>2</b> consecutive games at the same venue (StaticVenueConstraint) - 2 is the minimum value
+        5) Shared Venue teams :attr:``shared_venue_team_pairs`` should have complementary H-A pattern
+        """
         self.fill_balanced_bergers_table()
         self.assign_last_team_matches()
 
@@ -67,43 +75,30 @@ class Scheduler:
             2. some teams play more than 2 straight games in the same venue
 
         If we look closely, these violations occur only in the diagonal matchweeks - where teams play against each other.
-        The match-week where the team plays against itself (diagonal) actaully represent games that team plays against
-        the n-th team not included in the table yet
+        The matchweeks where the team plays against itself (diagonal) actually represent matchwweeks in which the team plays against
+        the n-th team not included in the table yet.
 
-        This method assign the opponents to the nth team, while being careful to respect the above mentioned 2 hard
-        constraints mentioned above
-
-        Identify the shared venue teams. Naturally, the teams with the schedules becoming closest to being opposites (when
-        one plays A the other plays H and Vice versa) are the teams
-            * 1 and x where x is n/2 (if even) n/2 + 1 (if odd)
-            if n is 10:
-            1 and 5
-        # Get indexes of shared venue teams
-        indexes_of_shared_venue_teams = [(i, math.ceil(no_of_teams / 2 + i - 1)) for i in range(number_of_shared_venue_pairs)]
-            2 and 6
-            3 and 7
-            ...
-
-        The maximum number of shared Venue teams that result with n-teams competitions is TODO
+        This method assign the opponents to the nth team, while being careful to respect the 2 hard constraints mentioned above.
         """
-        # Transfer match-weeks from diagonal to the n-th column (filled with zeros at the moment)
-        # print(fixture_table)
-
-        no_of_teams = len(self.fixture_table)
-        self.logger.info(f'number of teams is {no_of_teams}')
-        n = no_of_teams - 1
+        self.logger.info(f'number of teams is {self.number_of_teams}')
+        # `number_of_teams-1` represents the last team index (last column/row index) and the number of matchweeks for
+        # half season (before the matches start taking place for the second time)
+        n = self.number_of_teams - 1
 
         # Get indexes of shared venue teams
-        indexes_of_shared_venue_teams = get_indexes_of_shared_venue_teams(no_of_teams, self.number_of_shared_venue_pairs)
-        self.logger.info(f'shared venue team indexes out of {no_of_teams} are {indexes_of_shared_venue_teams}'
-                         f'(human readable: {[(x + 1, y + 1) for x, y in indexes_of_shared_venue_teams]})')
+        if self.number_of_shared_venue_pairs != 0:
+            indexes_of_shared_venue_teams = self.get_indexes_of_shared_venue_teams()
+            self.logger.info(f'shared venue team indexes out of {self.number_of_teams} are {indexes_of_shared_venue_teams}'
+                             f'(human readable: {[(x + 1, y + 1) for x, y in indexes_of_shared_venue_teams]})')
+        else:
+            indexes_of_shared_venue_teams = []
+            self.logger.info(f'no shared venue team pairs available')
 
         # Avoid modifying the object
         diagonal_values = self.fixture_table.diagonal().copy()
 
         # Before checking hard constraints make sure diagonal is set to zero so hard constraints violated by the diagonal are disregarded
-        np.fill_diagonal(self.fixture_table, np.zeros(self.number_of_shared_venue_pairs, dtype='int'))
-
+        np.fill_diagonal(self.fixture_table, 0)
         # Shared value teams will have only one conflict and it's the game in the lower index's diagonal
         # Change that to the match_week to be played in the second half of the season (reflection + n)
         for team_pair in indexes_of_shared_venue_teams:
@@ -144,8 +139,11 @@ class Scheduler:
                 self.fixture_table[team_pair[1], n] = valid_game_week
                 self.fixture_table[n, team_pair[1]] = valid_game_week - n
 
-        # Fill out remaining matches
-        for i in range(no_of_teams):
+        # Fill out remaining matches for last team
+        all_opponents = []
+        # Order matchweeks by balancing the distribution of first and second half of the season matchweeks
+        [all_opponents.extend([i, i + self.number_of_teams // 2]) for i in range(self.number_of_teams // 2)]
+        for i in all_opponents:
             if i == n:
                 # If last row and last column is reached (should be zero) the fixture is complete
                 break
@@ -190,7 +188,7 @@ class Scheduler:
 
             return tentative_value
 
-        self.logger.warning(f'could not add any of the tentative value {tentative_values} in {fixture_table}')
+        self.logger.warning(f'could not add any of the tentative value {tentative_values} in coordinates ({row}, {col}) in {fixture_table}')
         return None
 
     @staticmethod
@@ -205,12 +203,28 @@ class Scheduler:
 
         # Remove zeros
         fixture_list = [match_week for match_week in fixture_list if match_week != 0]
-        fixture_list.sort()
-        for k, g in groupby(enumerate(fixture_list), lambda x: x[0] - x[1]):
-            group = (map(itemgetter(1), g))
-            group = list(map(int, group))
-
-            if len(group) >= n:
-                return True
+        if contains_n_consecutive_numbers(fixture_list, n):
+            return True
 
         return False
+
+    def get_indexes_of_shared_venue_teams(self) -> List[Tuple[int, int]]:
+        """
+        Get pairs of indexes in the fixture table that have an opposite schedule and can be assigned to shared venue teams.
+
+        Naturally, after the fixture table is generated using the Berger's tables algorithm (https://fr.wikipedia.org/wiki/Table_de_Berger),
+        the teams with schedules closest to being opposites (when one plays Home, the other plays Away and vice versa) are the teams
+        assigned to the first index (first row & first column - one based) and the n/2 index (if even) or n/2 + 1 (if odd), n being the
+        number of teams.
+        For example, if the number of teams is 10, indexes 1 and 5 will be indexes that are to be assigned to the pair of teams that share a
+        venue. The next indexes pairs follow an ascending order from the first values [(1,5), (2,6), (3,7)...].
+        The number of possible shared venue pairs is of course dependent on the total number of teams participating in the competition.
+
+        :return: A list containing the pairs of indexes that are to be assigned to shared venue team pairs
+        """
+        if self.indexes_of_shared_venue_teams is not None:
+            return self.indexes_of_shared_venue_teams
+
+        self.indexes_of_shared_venue_teams = [(i, math.ceil(self.number_of_teams / 2 + i - 1)) for i in
+                                              range(self.number_of_shared_venue_pairs)]
+        return self.indexes_of_shared_venue_teams

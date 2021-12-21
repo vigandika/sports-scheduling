@@ -31,8 +31,11 @@ class RepeaterGapConstraintTests(TestCase):
             [1, 3, 10, 7, 4, 0],
         ])
         # then
-        repeater_gap_constraint = RepeaterGapConstraint(team1_id=1, team2_id=4, minimum_gap=5, penalty=1)
+        repeater_gap_constraint = RepeaterGapConstraint(team1_id=1, team2_id=4, minimum_gap=4, penalty=1)  # 4 & 9
         self.assertFalse(repeater_gap_constraint.is_violated(teams, fixture_table))
+
+        repeater_gap_constraint = RepeaterGapConstraint(team1_id=1, team2_id=4, minimum_gap=5, penalty=1)  # 4 & 9
+        self.assertTrue(repeater_gap_constraint.is_violated(teams, fixture_table))
 
         repeater_gap_constraint = RepeaterGapConstraint(team1_id=1, team2_id=4, minimum_gap=1, penalty=1)
         self.assertFalse(repeater_gap_constraint.is_violated(teams, fixture_table))
@@ -53,11 +56,17 @@ class RepeaterGapConstraintTests(TestCase):
             [1, 3, 10, 7, 4, 0],
         ])
         # then
-        repeater_gap_constraint = RepeaterGapConstraint(team1_id=1, team2_id=4, minimum_gap=5, penalty=1)
+        repeater_gap_constraint = RepeaterGapConstraint(team1_id=1, team2_id=4, minimum_gap=5, penalty=1)  # 4 & 8
         self.assertTrue(repeater_gap_constraint.is_violated(teams, fixture_table))
 
-        repeater_gap_constraint = RepeaterGapConstraint(team1_id=1, team2_id=4, minimum_gap=4, penalty=1)
+        repeater_gap_constraint = RepeaterGapConstraint(team1_id=1, team2_id=4, minimum_gap=4, penalty=1)  # 4 & 8
+        self.assertTrue(repeater_gap_constraint.is_violated(teams, fixture_table))
+
+        repeater_gap_constraint = RepeaterGapConstraint(team1_id=1, team2_id=4, minimum_gap=6, penalty=1)  # 4 & 8
+        self.assertTrue(repeater_gap_constraint.is_violated(teams, fixture_table))
+
+        repeater_gap_constraint = RepeaterGapConstraint(team1_id=1, team2_id=4, minimum_gap=3, penalty=1)  # 4 & 8
         self.assertFalse(repeater_gap_constraint.is_violated(teams, fixture_table))
 
-        repeater_gap_constraint = RepeaterGapConstraint(team1_id=1, team2_id=4, minimum_gap=6, penalty=1)
-        self.assertTrue(repeater_gap_constraint.is_violated(teams, fixture_table))
+        repeater_gap_constraint = RepeaterGapConstraint(team1_id=1, team2_id=4, minimum_gap=2, penalty=1)  # 4 & 8
+        self.assertFalse(repeater_gap_constraint.is_violated(teams, fixture_table))

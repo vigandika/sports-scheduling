@@ -1,0 +1,15 @@
+{
+  "teams": [
+    {"id": 1, "name": "Prishtina", "category": "A"},
+    {"id": 2, "name": "Flamurtari", "category": "B"},
+    {"id": 3, "name": "Gjilani", "category": "C"},
+    {"id": 4, "name": "Drita", "category": "A"},
+    {"id": 5, "name": "Ferronikeli", "category": "C"},
+    {"id": 6, "name": "Llapi", "category": "C"}
+  ],
+  "constraints": [
+    {"type": "completeCycleConstraint", "level": "HARD"},
+    {"type": "encounterConstraint", "level": "HARD"},
+    {"type": "participationConstraint", "level": "HARD"}
+  ]
+}
