@@ -12,7 +12,7 @@ soft constraints.
 * `EncounterConstraint (HARD)` - Every team should play against every other team, once Home and once Away
 * `StaticVenueConstraint (HARD)` - Limit the number of consecutive games a team can play in the same venue
 * `SharedVenueConstraint (HARD)` - Synchronize the schedule of a pair of teams that share a venue to have complementary H-A patterns
-* `FairnessConstraint (SOFT)` - Limit the number of consecutive games a low level team can play against the strongest teams (not yet handled 🚧)
+* `FairnessConstraint (SOFT)` - Limit the number of consecutive games a low level team can play against the strongest teams
 * `OpponentConstraint (SOFT)` - Forbid a team to play against an opponent in a given matchweek
 * `VenueConstraint (SOFT)` - Forbid a team to play at a venue (H/A) in a certain matchweek
 * `RepeaterGapConstraint (SOFT)` - Regulate the minimum number of rounds to be played before two teams meet for the second time
