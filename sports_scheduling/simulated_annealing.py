@@ -21,9 +21,8 @@ class SimulatedAnnealing:
     def run(self, initial_state: ndarray, teams: List[Team]):
         # initial_temperature = config['simulated_annealing']['initial_temp']
         # cooling_rate = config['simulated_annealing']['cooling_rate']
-        initial_temp = 5
+        initial_temp = 1.0
         final_temp = 0
-        alpha = 0.01
 
         current_temp = initial_temp
         # Start by initializing the current state with the initial state
@@ -31,27 +30,32 @@ class SimulatedAnnealing:
         current_teams = teams
 
         self.logger.info(f'current fitness: {self.fitness.get_fitness_value(current_state, current_teams)}')
+        iteration = 0
         while current_temp > final_temp:
+            iteration += 1
             neighbor_state, neighbor_teams = self.get_random_neighbor(current_state, current_teams)
             # Check if neighbor is a feasible solution
             if self.fitness.is_feasible_solution(neighbor_state, neighbor_teams):
-                # Check if neighbor is a better solution
-                # Lower fitness value better solution
-                fitness_diff = self.fitness.get_fitness_value(current_state, current_teams) - \
-                               self.fitness.get_fitness_value(neighbor_state, neighbor_teams)
+                neighbor_fitness = self.fitness.get_fitness_value(neighbor_state, neighbor_teams)
+                # Check if neighbor is a better solution (Lower fitness value better solution)
+                fitness_diff = self.fitness.get_fitness_value(current_state, current_teams) - neighbor_fitness
+
+                if self.fitness.get_fitness_value(neighbor_state, neighbor_teams) == 0:
+                    self.logger.info('found best solution')
+                    return current_state, current_teams
 
                 # if the new solution is better, accept it
                 if fitness_diff > 0:
-                    self.logger.info(f'accepting state with fitness: {self.fitness.get_fitness_value(neighbor_state, neighbor_teams)}')
+                    self.logger.info(f'accepting state with fitness: {neighbor_fitness}, temp: {current_temp}')
                     current_state, current_teams = neighbor_state, neighbor_teams
                 # if the new solution is not better, accept it with a probability of e^(-cost/temp)
                 else:
                     if random.uniform(0, 1) < math.exp(fitness_diff / current_temp):
-                        self.logger.info(f'accepting state with fitness: {self.fitness.get_fitness_value(neighbor_state, neighbor_teams)}')
+                        self.logger.info(f'accepting state with fitness: {neighbor_fitness}, temp: {current_temp}')
                         current_state, current_teams = neighbor_state, neighbor_teams
 
                 # decrement the temperature
-                current_temp -= alpha  # ? Decrement when no feasible solution is found ?
+                current_temp = math.pow(0.95, iteration) * initial_temp
 
         self.logger.info(f'final fitness: {self.fitness.get_fitness_value(current_state, current_teams)}')
         self.logger.debug(f'final state {current_state} with teams {[vars(team) for team in current_teams]}')
