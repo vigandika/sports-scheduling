@@ -1,0 +1,213 @@
+{
+  "teams": [
+    {
+      "id": 1,
+      "name": "Team 0",
+      "category": "A"
+    },
+    {
+      "id": 2,
+      "name": "Team 1",
+      "category": "C"
+    },
+    {
+      "id": 3,
+      "name": "Team 2",
+      "category": "C"
+    },
+    {
+      "id": 4,
+      "name": "Team 3",
+      "category": "B"
+    },
+    {
+      "id": 5,
+      "name": "Team 4",
+      "category": "C"
+    },
+    {
+      "id": 6,
+      "name": "Team 5",
+      "category": "C"
+    }
+  ],
+  "constraints": [
+    {
+      "type": "participationConstraint",
+      "level": "HARD"
+    },
+    {
+      "type": "encounterConstraint",
+      "level": "HARD"
+    },
+    {
+      "type": "completeCycleConstraint",
+      "level": "HARD"
+    },
+    {
+      "type": "staticVenueConstraint",
+      "level": "HARD",
+      "maximum": 3
+    },
+    {
+      "type": "sharedVenueConstraint",
+      "level": "HARD",
+      "teamPairs": [
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "type": "opponentConstraint",
+      "level": "SOFT",
+      "penalty": 4,
+      "teamId": 3,
+      "opponentId": 4,
+      "matchweek": 4
+    },
+    {
+      "type": "opponentConstraint",
+      "level": "SOFT",
+      "penalty": 4,
+      "teamId": 6,
+      "opponentId": 4,
+      "matchweek": 10
+    },
+    {
+      "type": "opponentConstraint",
+      "level": "SOFT",
+      "penalty": 4,
+      "teamId": 5,
+      "opponentId": 3,
+      "matchweek": 3
+    },
+    {
+      "type": "opponentConstraint",
+      "level": "SOFT",
+      "penalty": 5,
+      "teamId": 6,
+      "opponentId": 3,
+      "matchweek": 10
+    },
+    {
+      "type": "opponentConstraint",
+      "level": "SOFT",
+      "penalty": 3,
+      "teamId": 5,
+      "opponentId": 2,
+      "matchweek": 2
+    },
+    {
+      "type": "opponentConstraint",
+      "level": "SOFT",
+      "penalty": 1,
+      "teamId": 4,
+      "opponentId": 3,
+      "matchweek": 4
+    },
+    {
+      "type": "venueConstraint",
+      "level": "SOFT",
+      "penalty": 5,
+      "teamId": 2,
+      "venue": "A",
+      "matchweek": 4
+    },
+    {
+      "type": "venueConstraint",
+      "level": "SOFT",
+      "penalty": 3,
+      "teamId": 2,
+      "venue": "H",
+      "matchweek": 1
+    },
+    {
+      "type": "venueConstraint",
+      "level": "SOFT",
+      "penalty": 4,
+      "teamId": 3,
+      "venue": "A",
+      "matchweek": 3
+    },
+    {
+      "type": "venueConstraint",
+      "level": "SOFT",
+      "penalty": 3,
+      "teamId": 6,
+      "venue": "A",
+      "matchweek": 2
+    },
+    {
+      "type": "venueConstraint",
+      "level": "SOFT",
+      "penalty": 5,
+      "teamId": 4,
+      "venue": "H",
+      "matchweek": 5
+    },
+    {
+      "type": "venueConstraint",
+      "level": "SOFT",
+      "penalty": 3,
+      "teamId": 4,
+      "venue": "H",
+      "matchweek": 4
+    },
+    {
+      "type": "venueConstraint",
+      "level": "SOFT",
+      "penalty": 3,
+      "teamId": 5,
+      "venue": "H",
+      "matchweek": 2
+    },
+    {
+      "type": "repeaterGapConstraint",
+      "level": "SOFT",
+      "penalty": 5,
+      "team1Id": 2,
+      "team2Id": 3,
+      "minimumGap": 5
+    },
+    {
+      "type": "repeaterGapConstraint",
+      "level": "SOFT",
+      "penalty": 4,
+      "team1Id": 4,
+      "team2Id": 1,
+      "minimumGap": 7
+    },
+    {
+      "type": "repeaterGapConstraint",
+      "level": "SOFT",
+      "penalty": 3,
+      "team1Id": 5,
+      "team2Id": 3,
+      "minimumGap": 4
+    },
+    {
+      "type": "repeaterGapConstraint",
+      "level": "SOFT",
+      "penalty": 2,
+      "team1Id": 3,
+      "team2Id": 1,
+      "minimumGap": 2
+    },
+    {
+      "type": "repeaterGapConstraint",
+      "level": "SOFT",
+      "penalty": 5,
+      "team1Id": 1,
+      "team2Id": 3,
+      "minimumGap": 4
+    },
+    {
+      "type": "fairnessConstraint",
+      "level": "SOFT",
+      "penalty": 5,
+      "consecutiveHardMatches": 1
+    }
+  ]
+}
