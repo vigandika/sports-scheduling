@@ -21,7 +21,7 @@ class SimulatedAnnealing:
         self.logger = get_logger(__name__)
         self.fitness = SchedulerFitness(hard_constraints, soft_constraints)
 
-    def run(self, initial_state: ndarray, teams: List[Team], max_time: Optional[int] = 180):
+    def run(self, initial_state: ndarray, teams: List[Team], max_time: Optional[int] = 30):
         current_temp = self.initial_temp
         # Start by initializing the current state with the initial state
         current_state = initial_state
