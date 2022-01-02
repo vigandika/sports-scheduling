@@ -14,7 +14,7 @@ from sports_scheduling.scheduler_fitness import SchedulerFitness
 
 
 class SimulatedAnnealing:
-    initial_temp = 1
+    initial_temp = 10000
     final_temp = 0
 
     def __init__(self, hard_constraints: List[BaseConstraint], soft_constraints: List[BaseConstraint]):
