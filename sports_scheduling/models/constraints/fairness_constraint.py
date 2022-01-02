@@ -35,7 +35,7 @@ class FairnessConstraint(BaseConstraint):
                         tough_opponent_matchweeks.append(matchweek)
 
                 # Check if three consecutive matchweeks are present in the schedule with tough opponents
-                if contains_n_consecutive_numbers(tough_opponent_matchweeks, self.consecutive_hard_matches):
+                if contains_n_consecutive_numbers(tough_opponent_matchweeks, self.consecutive_hard_matches + 1):
                     return True
 
         return False
